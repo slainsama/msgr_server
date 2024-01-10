@@ -1,4 +1,4 @@
-package msgr_server
+package main
 
 import (
 	"github.com/fvbock/endless"
