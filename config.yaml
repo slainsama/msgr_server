@@ -1,0 +1,12 @@
+db:
+  host: 'localhost'
+  port: '3306'
+  user: 'test'
+  pass: '123456'
+  name: 'Zeus'
+server:
+  host: '127.0.0.1:8081'
+debug:
+  switch: 'off'
+  login: 'on'
+  cors: 'on'
