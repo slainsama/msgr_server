@@ -1,6 +1,4 @@
 package globals
-<<<<<<< HEAD
-=======
 
 import (
 	"fmt"
@@ -25,4 +23,3 @@ func initDB() {
 		log.Println(err)
 	}
 }
->>>>>>> origin/main
