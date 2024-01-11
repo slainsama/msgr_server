@@ -13,7 +13,7 @@ var DB *gorm.DB
 
 func initDB() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		UnmarshaledConfig.DB.Name,
+		UnmarshaledConfig.DB.User,
 		UnmarshaledConfig.DB.Pass,
 		UnmarshaledConfig.DB.Host,
 		UnmarshaledConfig.DB.Port,
