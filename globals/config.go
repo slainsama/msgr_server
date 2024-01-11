@@ -18,5 +18,5 @@ func initConfig() {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(Config)
+	log.Println(UnmarshaledConfig)
 }
