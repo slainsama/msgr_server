@@ -10,6 +10,6 @@ func init() {
 	Server.Use(gin.Recovery())
 	userRouter := Server.Group("/api/user")
 	scriptRouter := Server.Group("/api/script")
-	loadUserRouter(userRouter)
+	loadAdminUserRouter(userRouter)
 	loadScriptRouter(scriptRouter)
 }
