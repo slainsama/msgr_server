@@ -6,6 +6,7 @@ db:
   name: 'msgr_db'
 server:
   host: '127.0.0.1:8081'
+  secretKey: "test"
 debug:
   switch: 'off'
   login: 'on'
