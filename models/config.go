@@ -16,4 +16,7 @@ type Config struct {
 		Login  string `yaml:"login"`
 		Cors   string `yaml:"cors"`
 	}
+	Bot struct {
+		Token string `yaml:"token"`
+	}
 }
