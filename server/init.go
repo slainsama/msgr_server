@@ -13,5 +13,5 @@ func init() {
 	botListener := Server.Group("/api/script")
 	loadAdminUserRouter(userRouter)
 	loadScriptRouter(scriptRouter)
-	initBotLisener(botListener)
+	initBotListener(botListener)
 }
