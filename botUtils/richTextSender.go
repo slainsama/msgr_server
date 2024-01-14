@@ -11,7 +11,8 @@ import (
 	"net/http"
 )
 
-func SendTextMessage(message *models.Message) {
+func SendTextMessage(msg string) {
+	message := handleMsg(msg)
 	url := globals.UnmarshaledConfig.Bot.Token + "sendMessage"
 	params := map[string]string{
 		"chat_id": message.ChatId,
@@ -38,7 +39,8 @@ func SendTextMessage(message *models.Message) {
 	log.Println("Response Body:", buf.String())
 }
 
-func SendPhotoMessage(message *models.Message) {
+func SendPhotoMessage(msg string) {
+	message := handleMsg(msg)
 	url := globals.UnmarshaledConfig.Bot.Token + "sendPhoto"
 	params := map[string]string{
 		"chat_id": message.ChatId,
@@ -74,7 +76,7 @@ func buildURL(baseURL string, params map[string]string) string {
 	return url
 }
 
-func HandleMsg(msg string) *models.Message {
+func handleMsg(msg string) *models.Message {
 	decodedMsgBytes, err := base64.StdEncoding.DecodeString(msg)
 	if err != nil {
 		log.Println("Error decode base64:", err)
