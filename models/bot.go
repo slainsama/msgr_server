@@ -6,6 +6,12 @@ type Bot struct {
 	Secret string
 }
 
+type Message struct {
+	ChatId string `xml:"chat_id"`
+	Photo  string `xml:"photo"`
+	Text   string `xml:"text"`
+}
+
 type TelegramUpdate struct {
 	UpdateID int `json:"update_id"`
 	Message  struct {

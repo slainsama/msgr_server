@@ -1,22 +1,18 @@
 package botUtils
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/xml"
-	"fmt"
 	"github.com/slainsama/msgr_server/globals"
-	"io/ioutil"
+	"github.com/slainsama/msgr_server/models"
+	"io"
+	"log"
 	"net/http"
 )
 
-type Message struct {
-	ChatId string `xml:"chat_id"`
-	Photo  string `xml:"photo"`
-	Text   string `xml:"text"`
-}
-
-func SendTextMessage(message *Message) {
-	url := globals.UnmarshaledConfig.Bot.Token + "sendmessage"
+func SendTextMessage(message *models.Message) {
+	url := globals.UnmarshaledConfig.Bot.Token + "sendMessage"
 	params := map[string]string{
 		"chat_id": message.ChatId,
 		"text":    message.Text,
@@ -24,19 +20,25 @@ func SendTextMessage(message *Message) {
 	reqURL := buildURL(url, params)
 	response, err := http.Get(reqURL)
 	if err != nil {
-		fmt.Println("Error sending GET request:", err)
+		log.Println("Error sending GET request:", err)
 		return
 	}
-	defer response.Body.Close()
-	body, err := ioutil.ReadAll(response.Body)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println("Error closing :", err)
+		}
+	}(response.Body)
+	var buf bytes.Buffer
+	_, err = io.Copy(&buf, response.Body)
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		log.Println("Error reading response body:", err)
 		return
 	}
-	fmt.Println("Response Body:", string(body))
+	log.Println("Response Body:", buf.String())
 }
 
-func SendPhotoMessage(message *Message) {
+func SendPhotoMessage(message *models.Message) {
 	url := globals.UnmarshaledConfig.Bot.Token + "sendPhoto"
 	params := map[string]string{
 		"chat_id": message.ChatId,
@@ -45,17 +47,22 @@ func SendPhotoMessage(message *Message) {
 	reqURL := buildURL(url, params)
 	response, err := http.Get(reqURL)
 	if err != nil {
-		fmt.Println("Error sending GET request:", err)
+		log.Println("Error sending GET request:", err)
 		return
 	}
-	defer response.Body.Close()
-	body, err := ioutil.ReadAll(response.Body)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println("Error closing :", err)
+		}
+	}(response.Body)
+	var buf bytes.Buffer
+	_, err = io.Copy(&buf, response.Body)
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		log.Println("Error reading response body:", err)
 		return
 	}
-	fmt.Println("Response Body:", string(body))
-
+	log.Println("Response Body:", buf.String())
 }
 
 func buildURL(baseURL string, params map[string]string) string {
@@ -67,17 +74,17 @@ func buildURL(baseURL string, params map[string]string) string {
 	return url
 }
 
-func HandleMsg(msg string) *Message {
+func HandleMsg(msg string) *models.Message {
 	decodedMsgBytes, err := base64.StdEncoding.DecodeString(msg)
 	if err != nil {
-		fmt.Println("Error decode base64:", err)
+		log.Println("Error decode base64:", err)
 		return nil
 	}
 	msg = string(decodedMsgBytes)
-	var message = new(Message)
+	var message = new(models.Message)
 	err = xml.Unmarshal([]byte(msg), &message)
 	if err != nil {
-		fmt.Println("Error unmarshalling XML:", err)
+		log.Println("Error unmarshalling XML:", err)
 		return nil
 	}
 	return message

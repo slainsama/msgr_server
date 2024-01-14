@@ -2,4 +2,3 @@ config.yaml
 .idea
 .DS_Store
 botSend_test.go
-.gitignore
