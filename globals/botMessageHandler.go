@@ -6,7 +6,7 @@ func botMessageHandler() {
 	for {
 		select {
 		case newUpdate := <-MessageChannel:
-			botController.BotControllerRegister(newUpdate)
+			botController.TelegramBotControllerRegister(newUpdate)
 		}
 	}
 }
