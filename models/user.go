@@ -8,8 +8,12 @@ type userConfig map[string]configData
 
 type User struct {
 	gorm.Model
-	id             string
-	TelegramChatId int
-	IsAdmin        bool
-	Config         userConfig
+	ID           int
+	IsBot        bool
+	FirstName    string
+	LastName     string
+	Username     string
+	LanguageCode string
+	IsAdmin      bool
+	Config       userConfig
 }
