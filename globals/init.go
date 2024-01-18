@@ -1,7 +1,8 @@
 package globals
 
-func init() {
+func Init() {
 	initConfig()
 	initDB()
 	initTaskList()
+	initBot()
 }

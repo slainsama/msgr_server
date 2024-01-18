@@ -10,3 +10,7 @@ func botMessageHandler() {
 		}
 	}
 }
+
+func initBot() {
+	go botMessageHandler()
+}

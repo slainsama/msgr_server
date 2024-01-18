@@ -17,6 +17,7 @@ type Config struct {
 		Cors   string `yaml:"cors"`
 	}
 	Bot struct {
-		Token string `yaml:"token"`
+		Token     string `yaml:"token"`
+		GetUpdate string `yaml:"getUpdate"`
 	}
 }
