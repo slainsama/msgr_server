@@ -7,9 +7,8 @@ type Bot struct {
 }
 
 type Message struct {
-	ChatId string `xml:"chat_id"`
-	Photo  string `xml:"photo"`
-	Text   string `xml:"text"`
+	ChatId int    `xml:"chat_id"`
+	Data   string `xml:"text"`
 }
 
 type TelegramUpdate struct {

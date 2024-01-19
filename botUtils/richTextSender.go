@@ -2,8 +2,6 @@ package botUtils
 
 import (
 	"bytes"
-	"encoding/base64"
-	"encoding/xml"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 	"io"
@@ -11,12 +9,12 @@ import (
 	"net/http"
 )
 
-func SendTextMessage(msg string) {
-	message := handleMsg(msg)
+func SendTextMessage(msg models.Message) {
+	message := msg
 	url := globals.UnmarshaledConfig.Bot.Token + "sendMessage"
 	params := map[string]string{
-		"chat_id": message.ChatId,
-		"text":    message.Text,
+		"chat_id": string(rune(message.ChatId)),
+		"text":    message.Data,
 	}
 	reqURL := buildURL(url, params)
 	response, err := http.Get(reqURL)
@@ -39,6 +37,7 @@ func SendTextMessage(msg string) {
 	log.Println("Response Body:", buf.String())
 }
 
+/*
 func SendPhotoMessage(msg string) {
 	message := handleMsg(msg)
 	url := globals.UnmarshaledConfig.Bot.Token + "sendPhoto"
@@ -66,6 +65,7 @@ func SendPhotoMessage(msg string) {
 	}
 	log.Println("Response Body:", buf.String())
 }
+*/
 
 func buildURL(baseURL string, params map[string]string) string {
 	url := baseURL + "?"
@@ -76,6 +76,7 @@ func buildURL(baseURL string, params map[string]string) string {
 	return url
 }
 
+/*
 func handleMsg(msg string) *models.Message {
 	decodedMsgBytes, err := base64.StdEncoding.DecodeString(msg)
 	if err != nil {
@@ -91,3 +92,4 @@ func handleMsg(msg string) *models.Message {
 	}
 	return message
 }
+*/
