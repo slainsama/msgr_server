@@ -24,7 +24,7 @@ func initLastUpdateID() {
 	}
 
 	// marshal the response body
-	var messageJson models.TelegramResponse
+	var messageJson models.TelegramUpdateResponse
 	if err := json.Unmarshal(body, &messageJson); err != nil {
 		log.Fatal(err)
 	}
@@ -35,7 +35,7 @@ func initLastUpdateID() {
 }
 
 func WebhookMessageListenController(context *gin.Context) {
-	var messageJson models.TelegramResponse
+	var messageJson models.TelegramUpdateResponse
 	err := context.ShouldBind(&messageJson)
 	if err != nil {
 		log.Println(err)
@@ -61,7 +61,7 @@ func requestMessageListenController() {
 	}
 
 	// marshal the response body
-	var messageJson models.TelegramResponse
+	var messageJson models.TelegramUpdateResponse
 	if err := json.Unmarshal(body, &messageJson); err != nil {
 		log.Fatal(err)
 	}
