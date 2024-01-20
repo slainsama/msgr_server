@@ -1,13 +1,14 @@
-package globals
+package scriptController
 
 import (
 	"github.com/slainsama/msgr_server/botUtils"
+	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 )
 
 func scriptCallbackHandler() {
 	for {
-		for _, task := range TaskList {
+		for _, task := range globals.TaskList {
 			select {
 			case newCallback := <-task.CallbackData:
 				switch newCallback.Action {
