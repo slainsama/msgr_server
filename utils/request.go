@@ -1,19 +1,24 @@
 package utils
 
 import (
-	"errors"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/slainsama/msgr_server/globals"
 )
 
 // HttpGET is a wrapper of http.Get
 // It returns a *http.Response
-func HttpGET(baseURL string, params map[string]string) ([]byte, error) {
+func HttpGET(baseURL string, params map[string]string) (code int, body []byte, err error) {
 	url := buildURL(baseURL, params)
+
+	if isDEBUG := globals.UnmarshaledConfig.DEBUG.Switch; isDEBUG {
+		log.Println("HttpGET:", url)
+	}
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 	defer func(Body io.ReadCloser) {
 		if err := Body.Close(); err != nil {
@@ -21,15 +26,9 @@ func HttpGET(baseURL string, params map[string]string) ([]byte, error) {
 		}
 	}(resp.Body)
 
-	if resp.StatusCode != http.StatusOK {
-		err := errors.New("Error: " + resp.Status)
-		return nil, err
-	}
-
 	// Return response body as []byte
-	body, err := io.ReadAll(resp.Body)
-
-	return body, err
+	body, err = io.ReadAll(resp.Body)
+	return resp.StatusCode, body, err
 }
 
 // buildURL builds a url with params

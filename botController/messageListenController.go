@@ -3,6 +3,7 @@ package botController
 import (
 	"encoding/json"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,8 +19,8 @@ func initLastUpdateID() {
 
 	// fetch the latest update message
 	baseURL := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.GetUpdates
-	body, err := utils.HttpGET(baseURL, map[string]string{"offset": "-1"})
-	if err != nil {
+	code, body, err := utils.HttpGET(baseURL, map[string]string{"offset": "-1"})
+	if err != nil || code != http.StatusOK {
 		log.Fatal(err)
 	}
 
@@ -54,8 +55,8 @@ func requestMessageListenController() {
 	config := globals.UnmarshaledConfig
 
 	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.GetUpdates
-	body, err := utils.HttpGET(url, nil)
-	if err != nil {
+	code, body, err := utils.HttpGET(url, nil)
+	if err != nil || code != http.StatusOK {
 		log.Println(err)
 		return
 	}
