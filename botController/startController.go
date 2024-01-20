@@ -2,6 +2,7 @@ package botController
 
 import (
 	"errors"
+
 	"github.com/slainsama/msgr_server/botUtils"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
@@ -25,7 +26,6 @@ func startController(newUpdate models.TelegramUpdate) {
 				Username:     userInfo.Username,
 				LanguageCode: userInfo.LanguageCode,
 				IsAdmin:      false,
-				Config:       nil,
 			}
 			globals.DB.Create(&newUser)
 			message.Data = "welcome."
