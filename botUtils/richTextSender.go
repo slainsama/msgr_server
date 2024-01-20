@@ -17,7 +17,7 @@ func SendTextMessage(msg models.Message) {
 	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.SendMessage
 	params := map[string]string{
 		"chat_id":    strconv.Itoa(message.ChatId),
-		"text":       message.Data,
+		"text":       utils.EscapeChar(message.Data),
 		"parse_mode": "MarkdownV2", // Send as markdown text
 	}
 	code, body, err := utils.HttpGET(url, params)
