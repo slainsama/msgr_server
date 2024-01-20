@@ -1,6 +1,8 @@
 package botController
 
-import "github.com/slainsama/msgr_server/globals"
+import (
+	"github.com/slainsama/msgr_server/globals"
+)
 
 func botMessageHandler() {
 	for {

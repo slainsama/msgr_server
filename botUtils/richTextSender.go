@@ -1,40 +1,31 @@
 package botUtils
 
 import (
-	"bytes"
-	"github.com/slainsama/msgr_server/globals"
-	"github.com/slainsama/msgr_server/models"
-	"io"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/slainsama/msgr_server/globals"
+	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/utils"
 )
 
 func SendTextMessage(msg models.Message) {
+	config := globals.UnmarshaledConfig
+
 	message := msg
-	url := globals.UnmarshaledConfig.Bot.Token + "sendMessage"
+	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.SendMessage
 	params := map[string]string{
-		"chat_id": string(rune(message.ChatId)),
-		"text":    message.Data,
+		"chat_id":    strconv.Itoa(message.ChatId),
+		"text":       utils.EscapeChar(message.Data),
+		"parse_mode": "MarkdownV2", // Send as markdown text
 	}
-	reqURL := buildURL(url, params)
-	response, err := http.Get(reqURL)
-	if err != nil {
-		log.Println("Error sending GET request:", err)
+	code, body, err := utils.HttpGET(url, params)
+	if err != nil || code != http.StatusOK {
+		log.Println("Error sending TEXT message:", err)
+		log.Println("Response Body:", string(body))
 		return
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Println("Error closing :", err)
-		}
-	}(response.Body)
-	var buf bytes.Buffer
-	_, err = io.Copy(&buf, response.Body)
-	if err != nil {
-		log.Println("Error reading response body:", err)
-		return
-	}
-	log.Println("Response Body:", buf.String())
 }
 
 /*
@@ -66,15 +57,6 @@ func SendPhotoMessage(msg string) {
 	log.Println("Response Body:", buf.String())
 }
 */
-
-func buildURL(baseURL string, params map[string]string) string {
-	url := baseURL + "?"
-	for key, value := range params {
-		url += key + "=" + value + "&"
-	}
-	url = url[:len(url)-1]
-	return url
-}
 
 /*
 func handleMsg(msg string) *models.Message {
