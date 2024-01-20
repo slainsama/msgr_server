@@ -1,4 +1,4 @@
-package init
+package inits
 
 import (
 	"github.com/slainsama/msgr_server/botController"
