@@ -12,9 +12,9 @@ type Config struct {
 		Host string `yaml:"host"`
 	}
 	DEBUG struct {
-		Switch string `yaml:"switch"`
-		Login  string `yaml:"login"`
-		Cors   string `yaml:"cors"`
+		Switch bool `yaml:"switch"`
+		Login  bool `yaml:"login"`
+		Cors   bool `yaml:"cors"`
 	}
 	Bot struct {
 		APIUrl    string `yaml:"apiUrl"`
@@ -22,6 +22,7 @@ type Config struct {
 		GetUpdate string `yaml:"getUpdate"`
 		Methods   struct {
 			SendMessage string `yaml:"sendMessage"`
+			GetUpdates  string `yaml:"getUpdates"`
 		}
 	}
 }
