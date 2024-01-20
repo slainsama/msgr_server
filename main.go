@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+
 	"github.com/fvbock/endless"
 	"github.com/slainsama/msgr_server/botController"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/scriptController"
 	"github.com/slainsama/msgr_server/server"
-	"log"
 )
 
 func init() {
@@ -17,6 +18,11 @@ func init() {
 }
 
 func main() {
+	config := globals.UnmarshaledConfig
+	if config.DEBUG.Switch {
+		log.SetFlags(log.LstdFlags | log.Llongfile)
+	}
+
 	endlessServer := endless.NewServer("0.0.0.0:8081", server.Server)
 	err := endlessServer.ListenAndServe()
 	if err != nil {
