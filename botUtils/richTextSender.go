@@ -2,18 +2,22 @@ package botUtils
 
 import (
 	"bytes"
-	"github.com/slainsama/msgr_server/globals"
-	"github.com/slainsama/msgr_server/models"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/slainsama/msgr_server/globals"
+	"github.com/slainsama/msgr_server/models"
 )
 
 func SendTextMessage(msg models.Message) {
+	config := globals.UnmarshaledConfig
+
 	message := msg
-	url := globals.UnmarshaledConfig.Bot.Token + "sendMessage"
+	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.SendMessage
 	params := map[string]string{
-		"chat_id": string(rune(message.ChatId)),
+		"chat_id": strconv.Itoa(message.ChatId),
 		"text":    message.Data,
 	}
 	reqURL := buildURL(url, params)
