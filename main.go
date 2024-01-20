@@ -2,13 +2,21 @@ package main
 
 import (
 	"github.com/fvbock/endless"
-	"github.com/slainsama/msgr_server/init"
+	"github.com/slainsama/msgr_server/botController"
+	"github.com/slainsama/msgr_server/globals"
+	"github.com/slainsama/msgr_server/scriptController"
 	"github.com/slainsama/msgr_server/server"
 	"log"
 )
 
+func init() {
+	globals.Init()
+	server.Init()
+	botController.Init()
+	scriptController.Init()
+}
+
 func main() {
-	init.Init()
 	endlessServer := endless.NewServer("0.0.0.0:8081", server.Server)
 	err := endlessServer.ListenAndServe()
 	if err != nil {
