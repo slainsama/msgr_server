@@ -11,6 +11,11 @@ type Message struct {
 	Data   string `xml:"text"`
 }
 
+type TelegramResponse struct {
+	OK        bool `json:"ok"`
+	ErrorCode int  `json:"error_code"`
+}
+
 type TelegramUpdate struct {
 	UpdateID int `json:"update_id"`
 	Message  struct {
@@ -40,7 +45,8 @@ type TelegramUpdate struct {
 	} `json:"message"`
 }
 
-type TelegramResponse struct {
-	OK     bool             `json:"ok"`
+// TelegramUpdateResponse is the response from the GetUpdates method
+type TelegramUpdateResponse struct {
+	TelegramResponse
 	Result []TelegramUpdate `json:"result"`
 }
