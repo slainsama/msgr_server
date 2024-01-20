@@ -9,6 +9,7 @@ import (
 
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/utils"
 )
 
 func SendTextMessage(msg models.Message) {
@@ -20,7 +21,7 @@ func SendTextMessage(msg models.Message) {
 		"chat_id": strconv.Itoa(message.ChatId),
 		"text":    message.Data,
 	}
-	reqURL := buildURL(url, params)
+	reqURL := utils.BuildURL(url, params)
 	response, err := http.Get(reqURL)
 	if err != nil {
 		log.Println("Error sending GET request:", err)
@@ -70,15 +71,6 @@ func SendPhotoMessage(msg string) {
 	log.Println("Response Body:", buf.String())
 }
 */
-
-func buildURL(baseURL string, params map[string]string) string {
-	url := baseURL + "?"
-	for key, value := range params {
-		url += key + "=" + value + "&"
-	}
-	url = url[:len(url)-1]
-	return url
-}
 
 /*
 func handleMsg(msg string) *models.Message {

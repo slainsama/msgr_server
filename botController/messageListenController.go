@@ -2,16 +2,39 @@ package botController
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/slainsama/msgr_server/globals"
-	"github.com/slainsama/msgr_server/models"
 	"io"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/slainsama/msgr_server/globals"
+	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/utils"
 )
 
 var lastUpdateId = 0
+
+func initLastUpdateID() {
+	config := globals.UnmarshaledConfig
+
+	// fetch the latest update message
+	baseURL := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.GetUpdates
+	body, err := utils.HttpGET(baseURL, map[string]string{"offset": "-1"})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// marshal the response body
+	var messageJson models.TelegramResponse
+	if err := json.Unmarshal(body, &messageJson); err != nil {
+		log.Fatal(err)
+	}
+
+	// restore the last update message's id
+	newUpdates := messageJson.Result
+	lastUpdateId = newUpdates[0].UpdateID
+}
 
 func WebhookMessageListenController(context *gin.Context) {
 	var messageJson models.TelegramResponse
@@ -30,7 +53,9 @@ func WebhookMessageListenController(context *gin.Context) {
 }
 
 func requestMessageListenController() {
-	url := "https://api.telegram.org/bot" + globals.UnmarshaledConfig.Bot.Token + "/getUpdates"
+	config := globals.UnmarshaledConfig
+
+	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.GetUpdates
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Println(err)
@@ -59,6 +84,7 @@ func requestMessageListenController() {
 }
 
 func InitRequestMessageListenController() {
+	initLastUpdateID() // Get the latest update message's ID
 	for {
 		requestMessageListenController()
 		time.Sleep(5 * time.Second)
