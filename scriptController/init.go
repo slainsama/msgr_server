@@ -1,5 +1,5 @@
 package scriptController
 
-func init() {
+func Init() {
 	initScriptCallback()
 }

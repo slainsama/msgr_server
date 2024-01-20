@@ -1,5 +1,5 @@
 package botController
 
-func init() {
+func Init() {
 	initBot()
 }
