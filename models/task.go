@@ -2,10 +2,15 @@ package models
 
 type Task struct {
 	Id           string
-	UserId       string
+	UserId       int
 	ScriptName   string
 	IsLoop       bool
 	IsLongTerm   bool
 	Params       []string
-	CallbackData []interface{}
+	CallbackData chan Callback
+}
+
+type Callback struct {
+	Action string
+	Data   interface{}
 }

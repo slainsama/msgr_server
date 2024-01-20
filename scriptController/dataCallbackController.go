@@ -11,11 +11,11 @@ import (
 func DataCallbackController(context *gin.Context) {
 	taskId := context.Param("taskId")
 	task := globals.TaskList[taskId]
-	var data models.DataModel
+	var data models.Callback
 	err := context.ShouldBind(&data)
 	if err != nil {
 		log.Println(err)
 	}
-	task.CallbackData = append(task.CallbackData, data)
+	task.CallbackData <- data
 	utils.SuccessResp(context, nil)
 }

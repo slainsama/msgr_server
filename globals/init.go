@@ -5,4 +5,5 @@ func Init() {
 	initDB()
 	initTaskList()
 	initBot()
+	initScriptCallback()
 }
