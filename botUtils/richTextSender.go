@@ -1,10 +1,7 @@
 package botUtils
 
 import (
-	"bytes"
-	"io"
 	"log"
-	"net/http"
 	"strconv"
 
 	"github.com/slainsama/msgr_server/globals"
@@ -21,25 +18,13 @@ func SendTextMessage(msg models.Message) {
 		"chat_id": strconv.Itoa(message.ChatId),
 		"text":    message.Data,
 	}
-	reqURL := utils.BuildURL(url, params)
-	response, err := http.Get(reqURL)
+	body, err := utils.HttpGET(url, params)
 	if err != nil {
-		log.Println("Error sending GET request:", err)
+		log.Println("Error sending TEXT message:", err)
 		return
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Println("Error closing :", err)
-		}
-	}(response.Body)
-	var buf bytes.Buffer
-	_, err = io.Copy(&buf, response.Body)
-	if err != nil {
-		log.Println("Error reading response body:", err)
-		return
-	}
-	log.Println("Response Body:", buf.String())
+
+	log.Println("Response Body:", string(body))
 }
 
 /*
