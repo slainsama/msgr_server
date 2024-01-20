@@ -7,12 +7,13 @@ db:
 server:
   host: '127.0.0.1:8081'
 debug:
-  switch: 'off'
-  login: 'on'
-  cors: 'on'
+  switch: false
+  login: true
+  cors: true
 bot:
   apiUrl: 'https://api.telegram.org/bot'
   token: ''
   getUpdate: 'request' # how to get update (webhook/request)
   methods: # methods for request start with "/"
     sendMessage: "/sendMessage"
+    getUpdates: "/getUpdates"
