@@ -2,6 +2,7 @@ package botUtils
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/slainsama/msgr_server/globals"
@@ -19,13 +20,12 @@ func SendTextMessage(msg models.Message) {
 		"text":       message.Data,
 		"parse_mode": "MarkdownV2", // Send as markdown text
 	}
-	body, err := utils.HttpGET(url, params)
-	if err != nil {
+	code, body, err := utils.HttpGET(url, params)
+	if err != nil || code != http.StatusOK {
 		log.Println("Error sending TEXT message:", err)
+		log.Println("Response Body:", string(body))
 		return
 	}
-
-	log.Println("Response Body:", string(body))
 }
 
 /*
