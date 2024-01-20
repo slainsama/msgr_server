@@ -2,9 +2,7 @@ package botController
 
 import (
 	"encoding/json"
-	"io"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -56,24 +54,18 @@ func requestMessageListenController() {
 	config := globals.UnmarshaledConfig
 
 	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.GetUpdates
-	resp, err := http.Get(url)
+	body, err := utils.HttpGET(url, nil)
 	if err != nil {
 		log.Println(err)
+		return
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Println(err)
-		}
-	}(resp.Body)
-	if resp.StatusCode != http.StatusOK {
-		log.Printf("Error: %s\n", resp.Status)
-	}
+
+	// marshal the response body
 	var messageJson models.TelegramResponse
-	err = json.NewDecoder(resp.Body).Decode(&messageJson)
-	if err != nil {
-		log.Println(err)
+	if err := json.Unmarshal(body, &messageJson); err != nil {
+		log.Fatal(err)
 	}
+
 	newUpdates := messageJson.Result
 	for _, update := range newUpdates {
 		if update.UpdateID > lastUpdateId {
