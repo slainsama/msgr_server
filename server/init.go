@@ -4,7 +4,7 @@ import "github.com/gin-gonic/gin"
 
 var Server *gin.Engine
 
-func init() {
+func Init() {
 	Server := gin.New()
 	Server.Use(gin.Logger())
 	Server.Use(gin.Recovery())
