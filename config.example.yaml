@@ -16,4 +16,5 @@ bot:
   getUpdate: 'request' # how to get update (webhook/request)
   methods: # methods for request start with "/"
     sendMessage: "/sendMessage"
+    sendPhoto: "/sendPhoto"
     getUpdates: "/getUpdates"

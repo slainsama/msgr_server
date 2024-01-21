@@ -22,6 +22,7 @@ type Config struct {
 		GetUpdate string `yaml:"getUpdate"`
 		Methods   struct {
 			SendMessage string `yaml:"sendMessage"`
+			SendPhoto   string `yaml:"sendPhoto"`
 			GetUpdates  string `yaml:"getUpdates"`
 		}
 	}
