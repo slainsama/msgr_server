@@ -6,6 +6,7 @@ import (
 	"github.com/slainsama/msgr_server/botUtils"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/utils"
 	"gorm.io/gorm"
 )
 
@@ -28,11 +29,11 @@ func startController(newUpdate models.TelegramUpdate) {
 				IsAdmin:      false,
 			}
 			globals.DB.Create(&newUser)
-			message.Data = "welcome."
+			message.Data = utils.EscapeChar("welcome.")
 			botUtils.SendTextMessage(message)
 		}
 	} else {
-		message.Data = "user already exist."
+		message.Data = utils.EscapeChar("user already exist.")
 		botUtils.SendTextMessage(message)
 	}
 }
