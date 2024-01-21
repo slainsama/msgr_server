@@ -10,14 +10,13 @@ import (
 	"github.com/slainsama/msgr_server/utils"
 )
 
-func SendTextMessage(msg models.Message) {
+func SendTextMessage(message models.Message) {
 	config := globals.UnmarshaledConfig
 
-	message := msg
 	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.SendMessage
 	params := map[string]string{
 		"chat_id":    strconv.Itoa(message.ChatId),
-		"text":       utils.EscapeChar(message.Data),
+		"text":       message.Data,
 		"parse_mode": "MarkdownV2", // Send as markdown text
 	}
 	code, body, err := utils.HttpGET(url, params)
