@@ -30,10 +30,10 @@ func startController(newUpdate models.TelegramUpdate) {
 			}
 			globals.DB.Create(&newUser)
 			message.Data = utils.EscapeChar("welcome.")
-			botUtils.SendTextMessage(message)
+			botUtils.SendTextMessage(message.ChatId, message.Data)
 		}
 	} else {
 		message.Data = utils.EscapeChar("user already exist.")
-		botUtils.SendTextMessage(message)
+		botUtils.SendTextMessage(message.ChatId, message.Data)
 	}
 }
