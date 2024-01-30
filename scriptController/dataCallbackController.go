@@ -6,6 +6,7 @@ import (
 	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/utils"
 	"log"
+	"mime/multipart"
 )
 
 func DataCallbackController(context *gin.Context) {
@@ -15,7 +16,21 @@ func DataCallbackController(context *gin.Context) {
 	err := context.ShouldBind(&data)
 	if err != nil {
 		log.Println(err)
+		return
 	}
+	file, _, err := context.Request.FormFile("file")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	data.File = file
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}(file)
 	task.CallbackData <- data
 	utils.SuccessResp(context, nil)
 }

@@ -10,7 +10,7 @@ func Init() {
 	Server.Use(gin.Recovery())
 	userRouter := Server.Group("/api/user")
 	scriptRouter := Server.Group("/api/script")
-	botListener := Server.Group("/api/script")
+	botListener := Server.Group("/api/bot")
 	loadAdminUserRouter(userRouter)
 	loadScriptRouter(scriptRouter)
 	initBotListener(botListener)
