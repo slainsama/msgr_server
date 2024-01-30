@@ -6,18 +6,18 @@ import (
 	"strconv"
 
 	"github.com/slainsama/msgr_server/globals"
-	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/utils"
 )
 
-func SendTextMessage(message models.Message) {
+// SendTextMessage 待修改
+func SendTextMessage(chatId int, data string) {
 	config := globals.UnmarshaledConfig
 
 	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.SendMessage
 	params := map[string]string{
-		"chat_id":    strconv.Itoa(message.ChatId),
-		"text":       message.Data,
-		"parse_mode": "MarkdownV2", // Send as markdown text
+		"chat_id":    strconv.Itoa(chatId),
+		"text":       data,
+		"parse_mode": "MarkdownV2", // Send as Markdown text
 	}
 	code, body, err := utils.HttpGET(url, params)
 	if err != nil || code != http.StatusOK {

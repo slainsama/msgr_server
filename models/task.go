@@ -1,5 +1,7 @@
 package models
 
+import "mime/multipart"
+
 type Task struct {
 	Id           string
 	UserId       int
@@ -11,6 +13,7 @@ type Task struct {
 }
 
 type Callback struct {
-	Action string
-	Data   interface{}
+	Action string         `json:"action"`
+	Msg    string         `json:"msg"`
+	File   multipart.File `form:"file"`
 }
