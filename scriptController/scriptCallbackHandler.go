@@ -17,7 +17,7 @@ func scriptCallbackHandler() {
 				case "sendText":
 					sendText(task, newCallback)
 				case "sendPhoto":
-					sendPhoto(task, newCallback)
+					sendPhotoText(task, newCallback)
 
 				}
 			}
@@ -26,15 +26,17 @@ func scriptCallbackHandler() {
 }
 
 func sendText(task models.Task, newCallback models.Callback) {
-	botUtils.SendTextMessage(task.UserId, newCallback.Msg)
+	message := task.Id + " " + task.ScriptName + " " + newCallback.Msg
+	botUtils.SendTextMessage(task.UserId, message)
 }
 
-func sendPhoto(task models.Task, newCallback models.Callback) {
+func sendPhotoText(task models.Task, newCallback models.Callback) {
+	message := task.Id + " " + task.ScriptName + " " + newCallback.Msg
 	fileBytes, err := io.ReadAll(newCallback.File)
 	if err != nil {
 		log.Println(err)
 	}
-	botUtils.SendPhotoMessage(task.UserId, "", fileBytes)
+	botUtils.SendPhotoMessage(task.UserId, message, fileBytes)
 }
 
 func initScriptCallback() {
