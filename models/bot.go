@@ -56,3 +56,8 @@ type Entity struct {
 	Length int    `json:"length"`
 	Type   string `json:"type"`
 }
+
+type HandleUpdate struct {
+	NewUpdate TelegramUpdate
+	Args      []string
+}

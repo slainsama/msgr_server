@@ -10,11 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func startController(newUpdate models.TelegramUpdate) {
-	userInfo := newUpdate.Message.From
+func startController(newHandleUpdate models.HandleUpdate) {
+	userInfo := newHandleUpdate.NewUpdate.Message.From
 	var user models.User
 	var message models.Message
-	message.ChatId = newUpdate.Message.Chat.ID
+	message.ChatId = newHandleUpdate.NewUpdate.Message.Chat.ID
 	result := globals.DB.Where(models.User{ID: userInfo.ID}).First(&user)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {

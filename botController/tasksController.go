@@ -6,8 +6,8 @@ import (
 	"github.com/slainsama/msgr_server/models"
 )
 
-func taskController(newUpdate models.TelegramUpdate) {
-	userId := newUpdate.Message.Chat.ID
+func taskController(newHandleUpdate models.HandleUpdate) {
+	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	var message string
 	for _, task := range globals.TaskList {
 		if task.UserId == userId {

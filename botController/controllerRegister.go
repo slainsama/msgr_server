@@ -7,14 +7,17 @@ import (
 )
 
 func TelegramBotControllerRegister(newUpdate models.TelegramUpdate) {
-	commands := extractCommands(newUpdate)
-	switch newUpdate.Message.Text {
-	case "/start":
-		utils.RunInGoroutine(newUpdate, startController)
-	case "/tasks":
-		utils.RunInGoroutine(newUpdate, taskController)
-	case "/addParams":
-		utils.RunInGoroutine(newUpdate, addParamsController)
+	commands, args := extractCommands(newUpdate)
+	for _, command := range commands {
+		newHandleUpdate := models.HandleUpdate{NewUpdate: newUpdate, Args: args[command]}
+		switch command {
+		case "/start":
+			utils.RunInGoroutine(newHandleUpdate, startController)
+		case "/tasks":
+			utils.RunInGoroutine(newHandleUpdate, taskController)
+		case "/addParams":
+			utils.RunInGoroutine(newHandleUpdate, addParamsController)
+		}
 	}
 }
 
