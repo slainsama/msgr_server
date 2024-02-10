@@ -50,3 +50,9 @@ type TelegramUpdateResponse struct {
 	TelegramResponse
 	Result []TelegramUpdate `json:"result"`
 }
+
+type Entity struct {
+	Offset int    `json:"offset"`
+	Length int    `json:"length"`
+	Type   string `json:"type"`
+}
