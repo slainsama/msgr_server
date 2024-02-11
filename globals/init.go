@@ -4,4 +4,5 @@ func Init() {
 	initConfig()
 	initDB()
 	initTaskList()
+	initZygote()
 }
