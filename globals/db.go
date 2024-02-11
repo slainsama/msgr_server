@@ -27,4 +27,5 @@ func initDB() {
 	if err != nil {
 		log.Println(err)
 	}
+	err = DB.AutoMigrate(&models.Script{})
 }
