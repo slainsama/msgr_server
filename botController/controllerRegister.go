@@ -18,7 +18,7 @@ func TelegramBotControllerRegister(newUpdate models.TelegramUpdate) {
 		case "/addParams":
 			utils.RunInGoroutine(newHandleUpdate, addParamsController)
 		case "/createTask":
-			utils.RunInGoroutine(newHandleUpdate, addParamsController)
+			utils.RunInGoroutine(newHandleUpdate, createUserTaskController)
 		}
 	}
 }

@@ -1,9 +1,11 @@
 package models
 
+// Script "{scriptName}" to get scriptName;{arg1} to get args
 type Script struct {
-	id            string
-	name          string
-	status        string
-	paramRequired []string
-	dataReturn    []string
+	Id            string
+	Name          string
+	Command       string //such as "python3 {scriptName} {arg1} {arg2}"
+	Status        string
+	ParamRequired []string
+	DataReturn    []string
 }
