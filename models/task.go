@@ -14,7 +14,7 @@ type Task struct {
 }
 
 type Callback struct {
-	Action string         `json:"action"`
+	Action string         `json:"action"` //"sendText" or "sendPhoto"
 	Msg    string         `json:"msg"`
 	File   multipart.File `form:"file"`
 }
