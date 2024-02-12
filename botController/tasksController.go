@@ -25,6 +25,7 @@ func getUserTaskController(newHandleUpdate models.HandleUpdate) {
 	botUtils.SendTextMessage(userId, message)
 }
 
+// "/createTask {scriptName}"
 func createUserTaskController(newHandleUpdate models.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	args := newHandleUpdate.Args
@@ -59,5 +60,4 @@ func createUserTaskController(newHandleUpdate models.HandleUpdate) {
 		MemoryLimit: "",
 	})
 	newTask.ZygoteId = zygoteUuid
-
 }

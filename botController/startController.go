@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// "/start"
 func startController(newHandleUpdate models.HandleUpdate) {
 	userInfo := newHandleUpdate.NewUpdate.Message.From
 	var user models.User
