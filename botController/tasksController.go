@@ -52,7 +52,7 @@ func createUserTaskController(newHandleUpdate models.HandleUpdate) {
 		return
 	}
 	newTask := scriptUtils.TaskCreate(userId)
-	scriptCommand := utils.FormatCommand(script.Command, args[1:])
+	scriptCommand, _ := utils.FormatCommand(script.Command, newTask.Id, newTask.ScriptName, args[1:])
 	zygoteUuid, _ := globals.Zygote.StartProcess(scriptCommand, config.UserIsolated{Enable: false}, config.CGroup{
 		Enable:      false,
 		CpuShare:    "",

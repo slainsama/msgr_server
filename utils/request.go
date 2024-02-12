@@ -82,7 +82,7 @@ func HttpPOST(baseURL string, params map[string]any) (code int, body []byte, err
 	return resp.StatusCode, body, err
 }
 
-// buildURL builds a url with params
+// buildURL builds an url with params
 // If params is nil, it returns baseURL
 func buildURL(baseURL string, params map[string]string) string {
 	if params == nil {
