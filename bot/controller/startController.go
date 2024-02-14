@@ -1,9 +1,10 @@
-package botController
+package controller
 
 import (
 	"errors"
+	"github.com/slainsama/msgr_server/bot/botMethod"
+	models2 "github.com/slainsama/msgr_server/bot/models"
 
-	"github.com/slainsama/msgr_server/botUtils"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/utils"
@@ -11,10 +12,10 @@ import (
 )
 
 // "/start"
-func startController(newHandleUpdate models.HandleUpdate) {
+func startController(newHandleUpdate models2.HandleUpdate) {
 	userInfo := newHandleUpdate.NewUpdate.Message.From
 	var user models.User
-	var message models.Message
+	var message models2.Message
 	message.ChatId = newHandleUpdate.NewUpdate.Message.Chat.ID
 	result := globals.DB.Where(models.User{ID: userInfo.ID}).First(&user)
 	if result.Error != nil {
@@ -31,10 +32,10 @@ func startController(newHandleUpdate models.HandleUpdate) {
 			}
 			globals.DB.Create(&newUser)
 			message.Data = utils.EscapeChar("welcome.")
-			botUtils.SendTextMessage(message.ChatId, message.Data)
+			botMethod.SendTextMessage(message.ChatId, message.Data)
 		}
 	} else {
 		message.Data = utils.EscapeChar("user already exist.")
-		botUtils.SendTextMessage(message.ChatId, message.Data)
+		botMethod.SendTextMessage(message.ChatId, message.Data)
 	}
 }

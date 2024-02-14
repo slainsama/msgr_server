@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/fvbock/endless"
-	"github.com/slainsama/msgr_server/botController"
+	"github.com/slainsama/msgr_server/bot"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/scriptController"
 	"github.com/slainsama/msgr_server/server"
@@ -13,7 +13,7 @@ import (
 func init() {
 	globals.Init()
 	server.Init()
-	botController.Init()
+	bot.Init()
 	scriptController.Init()
 }
 

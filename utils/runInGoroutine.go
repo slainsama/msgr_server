@@ -1,6 +1,8 @@
 package utils
 
-import "github.com/slainsama/msgr_server/models"
+import (
+	"github.com/slainsama/msgr_server/bot/models"
+)
 
 type WorkerFunction func(newHandleUpdate models.HandleUpdate)
 

@@ -1,7 +1,7 @@
 package scriptController
 
 import (
-	"github.com/slainsama/msgr_server/botUtils"
+	botUtils2 "github.com/slainsama/msgr_server/bot/botMethod"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 	"io"
@@ -27,7 +27,7 @@ func scriptCallbackHandler() {
 
 func sendText(task models.Task, newCallback models.Callback) {
 	message := task.Id + " " + task.ScriptName + " " + newCallback.Msg
-	botUtils.SendTextMessage(task.UserId, message)
+	botUtils2.SendTextMessage(task.UserId, message)
 }
 
 func sendPhotoText(task models.Task, newCallback models.Callback) {
@@ -36,7 +36,7 @@ func sendPhotoText(task models.Task, newCallback models.Callback) {
 	if err != nil {
 		log.Println(err)
 	}
-	botUtils.SendPhotoMessage(task.UserId, message, fileBytes)
+	botUtils2.SendPhotoMessage(task.UserId, message, fileBytes)
 }
 
 func initScriptCallback() {
