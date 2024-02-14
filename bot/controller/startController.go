@@ -3,19 +3,17 @@ package controller
 import (
 	"errors"
 	"github.com/slainsama/msgr_server/bot/botMethod"
-	models2 "github.com/slainsama/msgr_server/bot/models"
-
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/utils"
 	"gorm.io/gorm"
 )
 
-// "/start"
-func startController(newHandleUpdate models2.HandleUpdate) {
+// StartController "/start"
+func StartController(newHandleUpdate models.HandleUpdate) {
 	userInfo := newHandleUpdate.NewUpdate.Message.From
 	var user models.User
-	var message models2.Message
+	var message models.Message
 	message.ChatId = newHandleUpdate.NewUpdate.Message.Chat.ID
 	result := globals.DB.Where(models.User{ID: userInfo.ID}).First(&user)
 	if result.Error != nil {

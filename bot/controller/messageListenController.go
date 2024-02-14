@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/slainsama/msgr_server/bot/models"
+	"github.com/slainsama/msgr_server/models"
 	"log"
 	"net/http"
 	"time"
