@@ -1,4 +1,4 @@
-package botUtils
+package botMethod
 
 import (
 	"log"

@@ -1,14 +1,14 @@
-package botController
+package controller
 
 import (
 	"encoding/json"
+	"github.com/slainsama/msgr_server/bot/models"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/slainsama/msgr_server/globals"
-	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/utils"
 )
 

@@ -1,10 +1,11 @@
-package botController
+package controller
 
 import (
 	"errors"
 	"fmt"
 	"github.com/bydBoys/ProcZygoteSDK/config"
-	"github.com/slainsama/msgr_server/botUtils"
+	"github.com/slainsama/msgr_server/bot/botMethod"
+	models2 "github.com/slainsama/msgr_server/bot/models"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/scriptUtils"
@@ -14,7 +15,7 @@ import (
 	"strings"
 )
 
-func getUserTaskController(newHandleUpdate models.HandleUpdate) {
+func getUserTaskController(newHandleUpdate models2.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	var message string
 	for _, task := range globals.TaskList {
@@ -22,18 +23,18 @@ func getUserTaskController(newHandleUpdate models.HandleUpdate) {
 			message = message + task.Id + " " + task.ScriptName
 		}
 	}
-	botUtils.SendTextMessage(userId, message)
+	botMethod.SendTextMessage(userId, message)
 }
 
 // "/createTask {scriptName}"
-func createUserTaskController(newHandleUpdate models.HandleUpdate) {
+func createUserTaskController(newHandleUpdate models2.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	args := newHandleUpdate.Args
 	script := new(models.Script)
 	if result := globals.DB.First(script, "name = ?", args[0]); result.Error != nil {
 		if errors.Is(gorm.ErrRecordNotFound, result.Error) {
 			// 记录不存在
-			botUtils.SendTextMessage(userId, fmt.Sprintf("no script named %s", args[0]))
+			botMethod.SendTextMessage(userId, fmt.Sprintf("no script named %s", args[0]))
 			return
 		} else {
 			// 其他错误
@@ -43,11 +44,11 @@ func createUserTaskController(newHandleUpdate models.HandleUpdate) {
 		}
 	}
 	if len(args) != len(script.ParamRequired)+1 {
-		botUtils.SendTextMessage(userId, fmt.Sprintf("%d params expected,expect:", len(script.ParamRequired)))
+		botMethod.SendTextMessage(userId, fmt.Sprintf("%d params expected,expect:", len(script.ParamRequired)))
 		if len(script.ParamRequired) == 0 {
-			botUtils.SendTextMessage(userId, "none")
+			botMethod.SendTextMessage(userId, "none")
 		} else {
-			botUtils.SendTextMessage(userId, strings.Join(script.ParamRequired, " "))
+			botMethod.SendTextMessage(userId, strings.Join(script.ParamRequired, " "))
 		}
 		return
 	}

@@ -1,7 +1,8 @@
-package botController
+package register
 
 import (
-	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/bot"
+	"github.com/slainsama/msgr_server/bot/models"
 	"github.com/slainsama/msgr_server/utils"
 )
 
@@ -11,13 +12,13 @@ func TelegramBotControllerRegister(newUpdate models.TelegramUpdate) {
 		newHandleUpdate := models.HandleUpdate{NewUpdate: newUpdate, Args: args[command]}
 		switch command {
 		case "/start":
-			utils.RunInGoroutine(newHandleUpdate, startController)
+			utils.RunInGoroutine(newHandleUpdate, bot.startController)
 		case "/tasks":
-			utils.RunInGoroutine(newHandleUpdate, getUserTaskController)
+			utils.RunInGoroutine(newHandleUpdate, bot.getUserTaskController)
 		case "/addParams":
-			utils.RunInGoroutine(newHandleUpdate, addParamsController)
+			utils.RunInGoroutine(newHandleUpdate, bot.addParamsController)
 		case "/createTask":
-			utils.RunInGoroutine(newHandleUpdate, createUserTaskController)
+			utils.RunInGoroutine(newHandleUpdate, bot.createUserTaskController)
 		}
 	}
 }

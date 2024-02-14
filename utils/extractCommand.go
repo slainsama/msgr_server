@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/bot/models"
 	"strings"
 )
 
