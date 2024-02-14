@@ -58,14 +58,14 @@ func SendPhotoMessage(msg string) {
 */
 
 /*
-func handleMsg(msg string) *models.Message {
+func handleMsg(msg string) *botModels.Message {
 	decodedMsgBytes, err := base64.StdEncoding.DecodeString(msg)
 	if err != nil {
 		log.Println("Error decode base64:", err)
 		return nil
 	}
 	msg = string(decodedMsgBytes)
-	var message = new(models.Message)
+	var message = new(botModels.Message)
 	err = xml.Unmarshal([]byte(msg), &message)
 	if err != nil {
 		log.Println("Error unmarshalling XML:", err)

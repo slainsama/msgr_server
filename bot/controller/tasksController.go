@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/bydBoys/ProcZygoteSDK/config"
 	"github.com/slainsama/msgr_server/bot/botMethod"
-	models2 "github.com/slainsama/msgr_server/bot/models"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/scriptUtils"
@@ -15,7 +14,7 @@ import (
 	"strings"
 )
 
-func getUserTaskController(newHandleUpdate models2.HandleUpdate) {
+func GetUserTaskController(newHandleUpdate models.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	var message string
 	for _, task := range globals.TaskList {
@@ -26,8 +25,8 @@ func getUserTaskController(newHandleUpdate models2.HandleUpdate) {
 	botMethod.SendTextMessage(userId, message)
 }
 
-// "/createTask {scriptName}"
-func createUserTaskController(newHandleUpdate models2.HandleUpdate) {
+// CreateUserTaskController "/createTask {scriptName}"
+func CreateUserTaskController(newHandleUpdate models.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	args := newHandleUpdate.Args
 	script := new(models.Script)

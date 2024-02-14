@@ -3,12 +3,12 @@ package controller
 import (
 	"fmt"
 	"github.com/slainsama/msgr_server/bot/botMethod"
-	"github.com/slainsama/msgr_server/bot/models"
 	"github.com/slainsama/msgr_server/globals"
+	"github.com/slainsama/msgr_server/models"
 )
 
-// "/addParams {taskId} {arg1} {arg2}"
-func addParamsController(newHandleUpdate models.HandleUpdate) {
+// AddParamsController "/addParams {taskId} {arg1} {arg2}"
+func AddParamsController(newHandleUpdate models.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	taskId := newHandleUpdate.Args[0]
 	args := newHandleUpdate.Args[1:]
