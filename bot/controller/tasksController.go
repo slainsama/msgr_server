@@ -7,7 +7,6 @@ import (
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
-	"github.com/slainsama/msgr_server/scriptUtils"
 	"github.com/slainsama/msgr_server/utils"
 	"gorm.io/gorm"
 	"log"
@@ -51,7 +50,7 @@ func CreateUserTaskController(newHandleUpdate models.HandleUpdate) {
 		}
 		return
 	}
-	newTask := scriptUtils.TaskCreate(userId)
+	newTask := utils.TaskCreate(userId)
 	scriptCommand, _ := utils.FormatCommand(script.Command, newTask.Id, newTask.ScriptName, args[1:])
 	zygoteUuid, _ := globals.Zygote.StartProcess(scriptCommand, config.UserIsolated{Enable: false}, config.CGroup{
 		Enable:      false,
