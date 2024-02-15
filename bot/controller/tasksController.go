@@ -3,6 +3,9 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/bydBoys/ProcZygoteSDK/config"
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	models2 "github.com/slainsama/msgr_server/bot/models"
@@ -11,11 +14,9 @@ import (
 	"github.com/slainsama/msgr_server/scriptUtils"
 	"github.com/slainsama/msgr_server/utils"
 	"gorm.io/gorm"
-	"log"
-	"strings"
 )
 
-func getUserTaskController(newHandleUpdate models2.HandleUpdate) {
+func GetUserTaskController(newHandleUpdate models2.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	var message string
 	for _, task := range globals.TaskList {
@@ -27,7 +28,7 @@ func getUserTaskController(newHandleUpdate models2.HandleUpdate) {
 }
 
 // "/createTask {scriptName}"
-func createUserTaskController(newHandleUpdate models2.HandleUpdate) {
+func CreateUserTaskController(newHandleUpdate models2.HandleUpdate) {
 	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
 	args := newHandleUpdate.Args
 	script := new(models.Script)

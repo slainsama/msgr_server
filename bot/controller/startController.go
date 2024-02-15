@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	models2 "github.com/slainsama/msgr_server/bot/models"
 
@@ -12,7 +13,7 @@ import (
 )
 
 // "/start"
-func startController(newHandleUpdate models2.HandleUpdate) {
+func StartController(newHandleUpdate models2.HandleUpdate) {
 	userInfo := newHandleUpdate.NewUpdate.Message.From
 	var user models.User
 	var message models2.Message
