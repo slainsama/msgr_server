@@ -10,7 +10,6 @@ import (
 	"github.com/slainsama/msgr_server/utils"
 	"gorm.io/gorm"
 	"log"
-	"strings"
 )
 
 func GetUserTaskController(newHandleUpdate models.HandleUpdate) {
@@ -41,15 +40,18 @@ func CreateUserTaskController(newHandleUpdate models.HandleUpdate) {
 			return
 		}
 	}
-	if len(args) != len(script.ParamRequired)+1 {
-		botMethod.SendTextMessage(userId, fmt.Sprintf("%d params expected,expect:", len(script.ParamRequired)))
-		if len(script.ParamRequired) == 0 {
-			botMethod.SendTextMessage(userId, "none")
-		} else {
-			botMethod.SendTextMessage(userId, strings.Join(script.ParamRequired, " "))
+	/*
+		argsNum := utils.GetArgsNum(script)
+		if len(args) != argsNum+1 {
+			botMethod.SendTextMessage(userId, fmt.Sprintf("%d params expected,expect:", argsNum))
+			if argsNum == 0 {
+				botMethod.SendTextMessage(userId, "none")
+			} else {
+				botMethod.SendTextMessage(userId, strings.Join(argsNum, " "))
+			}
+			return
 		}
-		return
-	}
+	*/
 	newTask := utils.TaskCreate(userId)
 	scriptCommand, _ := utils.FormatCommand(script.Command, newTask.Id, newTask.ScriptName, args[1:])
 	zygoteUuid, _ := globals.Zygote.StartProcess(scriptCommand, config.UserIsolated{Enable: false}, config.CGroup{
