@@ -1,4 +1,4 @@
-package scriptUtils
+package utils
 
 import (
 	"github.com/google/uuid"
