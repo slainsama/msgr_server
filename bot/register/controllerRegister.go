@@ -2,12 +2,13 @@ package register
 
 import (
 	"github.com/slainsama/msgr_server/bot/controller"
+	botUtils "github.com/slainsama/msgr_server/bot/utils"
 	"github.com/slainsama/msgr_server/models"
 	"github.com/slainsama/msgr_server/utils"
 )
 
 func TelegramBotControllerRegister(newUpdate models.TelegramUpdate) {
-	commands, args := utils.ExtractCommands(newUpdate)
+	commands, args := botUtils.ExtractCommands(newUpdate)
 	for _, command := range commands {
 		newHandleUpdate := models.HandleUpdate{NewUpdate: newUpdate, Args: args[command]}
 		switch command {
