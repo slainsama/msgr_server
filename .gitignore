@@ -3,3 +3,4 @@ config.yaml
 .DS_Store
 botSend_test.go
 msgr_server
+.vscode
