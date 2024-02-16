@@ -19,7 +19,7 @@ func TestNewCoversationHandler(t *testing.T) {
 	)
 
 	// Initialize conversation handler
-	conversationHandler := handler.NewCoversationHandler(
+	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
 		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
 			t.Log("Start upload")
@@ -94,7 +94,7 @@ func TestNewCoversationHandlerWithMultiChoice(t *testing.T) {
 	)
 
 	// Initialize conversation handler
-	conversationHandler := handler.NewCoversationHandler(
+	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
 		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
 			t.Log("Start upload")

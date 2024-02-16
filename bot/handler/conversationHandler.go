@@ -20,7 +20,7 @@ type ConversationHandler struct {
 	EndHandler           *CommandHandler
 }
 
-func NewCoversationHandler(
+func NewConversationHandler(
 	conversationID string,
 	startHandler *CommandHandler,
 	conversationHandlers map[int][]Handler,
