@@ -9,7 +9,7 @@ import (
 	"github.com/slainsama/msgr_server/models"
 )
 
-func TestNewCoversationHandler(t *testing.T) {
+func TestNewConversationHandler(t *testing.T) {
 	updateChan := make(chan models.TelegramUpdate, 5)
 	var wg sync.WaitGroup
 	const (
@@ -84,7 +84,7 @@ func TestNewCoversationHandler(t *testing.T) {
 	wg.Wait()
 }
 
-func TestNewCoversationHandlerWithMultiChoice(t *testing.T) {
+func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 	updateChan := make(chan models.TelegramUpdate, 5)
 	var wg sync.WaitGroup
 	const (
