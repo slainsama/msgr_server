@@ -56,54 +56,13 @@ func TestNewCoversationHandler(t *testing.T) {
 	wg.Add(2)
 	go func() {
 		// Send start message
-		update := models.TelegramUpdate{}
-		update.Message.Text = "/startUpload"
-		update.Message.Chat.ID = 123
-		update.Message.From.ID = 123
-		update.Message.Entities = append(update.Message.Entities, struct {
-			Offset int    "json:\"offset\""
-			Length int    "json:\"length\""
-			Type   string "json:\"type\""
-		}{
-			Offset: 0,
-			Length: 12,
-			Type:   "bot_command",
-		})
-		updateChan <- update
+		updateChan <- newStartUpdate()
 		time.Sleep(time.Second)
-
 		// Send message
-		update = models.TelegramUpdate{}
-		update.Message.Text = "/hello"
-		update.Message.Chat.ID = 123
-		update.Message.From.ID = 123
-		update.Message.Entities = append(update.Message.Entities, struct {
-			Offset int    "json:\"offset\""
-			Length int    "json:\"length\""
-			Type   string "json:\"type\""
-		}{
-			Offset: 0,
-			Length: 6,
-			Type:   "bot_command",
-		})
-		updateChan <- update
+		updateChan <- newHelloUpdate()
 		time.Sleep(time.Second)
-
 		// Send end message
-		update = models.TelegramUpdate{}
-		update.Message.Chat.ID = 123
-		update.Message.From.ID = 123
-		update.Message.Text = "/endUpload"
-		update.Message.Entities = append(update.Message.Entities, struct {
-			Offset int    "json:\"offset\""
-			Length int    "json:\"length\""
-			Type   string "json:\"type\""
-		}{
-			Offset: 0,
-			Length: 10,
-			Type:   "bot_command",
-		})
-		updateChan <- update
+		updateChan <- newEndUpdate()
 		time.Sleep(time.Second)
 
 		// Send end message
@@ -180,56 +139,14 @@ func TestNewCoversationHandlerWithMultiChoice(t *testing.T) {
 	wg.Add(2)
 	go func() {
 		// Send start message
-		update := models.TelegramUpdate{}
-		update.Message.Text = "/startUpload"
-		update.Message.Chat.ID = 123
-		update.Message.From.ID = 123
-		update.Message.Entities = append(update.Message.Entities, struct {
-			Offset int    "json:\"offset\""
-			Length int    "json:\"length\""
-			Type   string "json:\"type\""
-		}{
-			Offset: 0,
-			Length: 12,
-			Type:   "bot_command",
-		})
-		updateChan <- update
+		updateChan <- newStartUpdate()
 		time.Sleep(time.Second)
-
 		// Send message
-		update = models.TelegramUpdate{}
-		update.Message.Text = "/another_hello"
-		update.Message.Chat.ID = 123
-		update.Message.From.ID = 123
-		update.Message.Entities = append(update.Message.Entities, struct {
-			Offset int    "json:\"offset\""
-			Length int    "json:\"length\""
-			Type   string "json:\"type\""
-		}{
-			Offset: 0,
-			Length: 14,
-			Type:   "bot_command",
-		})
-		updateChan <- update
+		updateChan <- newAnotherHelloUpdate()
 		time.Sleep(time.Second)
-
 		// Send end message
-		update = models.TelegramUpdate{}
-		update.Message.Chat.ID = 123
-		update.Message.From.ID = 123
-		update.Message.Text = "/endUpload"
-		update.Message.Entities = append(update.Message.Entities, struct {
-			Offset int    "json:\"offset\""
-			Length int    "json:\"length\""
-			Type   string "json:\"type\""
-		}{
-			Offset: 0,
-			Length: 10,
-			Type:   "bot_command",
-		})
-		updateChan <- update
+		updateChan <- newEndUpdate()
 		time.Sleep(time.Second)
-
 		// Send end message
 		wg.Done()
 	}()
