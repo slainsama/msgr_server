@@ -36,6 +36,32 @@ func newHelloUpdate() models.TelegramUpdate {
 	return helloUpdate
 }
 
+func newMultiCommandHelloUpdate() models.TelegramUpdate {
+	multiCommandHelloUpdate := models.TelegramUpdate{}
+	multiCommandHelloUpdate.Message.Text = "/hello 1 2 3 /another_hello 1 2 3 4 5 6"
+	multiCommandHelloUpdate.Message.Chat.ID = 123
+	multiCommandHelloUpdate.Message.From.ID = 123
+	multiCommandHelloUpdate.Message.Entities = append(multiCommandHelloUpdate.Message.Entities, struct {
+		Offset int    "json:\"offset\""
+		Length int    "json:\"length\""
+		Type   string "json:\"type\""
+	}{
+		Offset: 0,
+		Length: 6,
+		Type:   "bot_command",
+	})
+	multiCommandHelloUpdate.Message.Entities = append(multiCommandHelloUpdate.Message.Entities, struct {
+		Offset int    "json:\"offset\""
+		Length int    "json:\"length\""
+		Type   string "json:\"type\""
+	}{
+		Offset: 13,
+		Length: 14,
+		Type:   "bot_command",
+	})
+	return multiCommandHelloUpdate
+}
+
 func newAnotherHelloUpdate() models.TelegramUpdate {
 	anotherHelloUpdate := models.TelegramUpdate{}
 	anotherHelloUpdate.Message.Text = "/another_hello"
