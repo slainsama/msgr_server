@@ -18,6 +18,8 @@ func TestNewConversationHandler(t *testing.T) {
 		end
 	)
 
+	dispatcher := handler.NewUpdateDispatcher()
+
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
@@ -50,7 +52,7 @@ func TestNewConversationHandler(t *testing.T) {
 			})
 		}),
 	)
-	handler.AddHandler(conversationHandler)
+	dispatcher.AddHandler(conversationHandler)
 
 	// Mock update message channel
 	wg.Add(2)
@@ -71,11 +73,7 @@ func TestNewConversationHandler(t *testing.T) {
 	go func() {
 		for i := 0; i < 3; i++ {
 			newUpdate := <-updateChan
-			for _, h := range handler.Handlers {
-				if h.ShouldHandle(&newUpdate) {
-					h.HandlerFunc(&newUpdate)
-				}
-			}
+			dispatcher.Dispatch(&newUpdate)
 		}
 		wg.Done()
 	}()
@@ -91,6 +89,8 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 		sendHello
 		end
 	)
+
+	dispatcher := handler.NewUpdateDispatcher()
 
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
@@ -132,7 +132,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 			})
 		}),
 	)
-	handler.AddHandler(conversationHandler)
+	dispatcher.AddHandler(conversationHandler)
 
 	// Mock update message channel
 	wg.Add(2)
@@ -152,11 +152,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 	go func() {
 		for i := 0; i < 3; i++ {
 			newUpdate := <-updateChan
-			for _, h := range handler.Handlers {
-				if h.ShouldHandle(&newUpdate) {
-					h.HandlerFunc(&newUpdate)
-				}
-			}
+			dispatcher.Dispatch(&newUpdate)
 		}
 		wg.Done()
 	}()
@@ -172,6 +168,8 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 		sendHello
 		end
 	)
+
+	dispatcher := handler.NewUpdateDispatcher()
 
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
@@ -207,7 +205,8 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 	)
 	conversationHandler.SetConversationTimeout(time.Second)
 	conversationHandler.SetTimeoutTask(func() { t.Log("Timeout") })
-	handler.AddHandler(conversationHandler)
+
+	dispatcher.AddHandler(conversationHandler)
 
 	// Mock update message channel
 	wg.Add(2)
@@ -224,11 +223,7 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 	go func() {
 		for i := 0; i < 2; i++ {
 			newUpdate := <-updateChan
-			for _, h := range handler.Handlers {
-				if h.ShouldHandle(&newUpdate) {
-					h.HandlerFunc(&newUpdate)
-				}
-			}
+			dispatcher.Dispatch(&newUpdate)
 		}
 		wg.Done()
 	}()
