@@ -18,6 +18,8 @@ func TestNewConversationHandler(t *testing.T) {
 		end
 	)
 
+	dispatcher := handler.NewUpdateDispatcher()
+
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
@@ -33,7 +35,7 @@ func TestNewConversationHandler(t *testing.T) {
 			sendHello: {
 				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
 					t.Log("Hello")
-					handler.UpdateState(sendHello, &handler.StateKey{
+					handler.UpdateState(end, &handler.StateKey{
 						ConversationID: "testUpload",
 						ChatID:         u.Message.Chat.ID,
 						UserID:         u.Message.From.ID,
@@ -43,14 +45,9 @@ func TestNewConversationHandler(t *testing.T) {
 		},
 		handler.NewCommandHandler("/endUpload", func(u *models.TelegramUpdate) {
 			t.Log("End upload")
-			handler.UpdateState(end, &handler.StateKey{
-				ConversationID: "testUpload",
-				ChatID:         u.Message.Chat.ID,
-				UserID:         u.Message.From.ID,
-			})
 		}),
 	)
-	handler.AddHandler(conversationHandler)
+	dispatcher.AddHandler(conversationHandler)
 
 	// Mock update message channel
 	wg.Add(2)
@@ -71,11 +68,7 @@ func TestNewConversationHandler(t *testing.T) {
 	go func() {
 		for i := 0; i < 3; i++ {
 			newUpdate := <-updateChan
-			for _, h := range handler.Handlers {
-				if h.ShouldHandle(&newUpdate) {
-					h.HandlerFunc(&newUpdate)
-				}
-			}
+			dispatcher.Dispatch(&newUpdate)
 		}
 		wg.Done()
 	}()
@@ -92,6 +85,8 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 		end
 	)
 
+	dispatcher := handler.NewUpdateDispatcher()
+
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
@@ -107,7 +102,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 			sendHello: {
 				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
 					t.Log("Hello")
-					handler.UpdateState(sendHello, &handler.StateKey{
+					handler.UpdateState(end, &handler.StateKey{
 						ConversationID: "testUpload",
 						ChatID:         u.Message.Chat.ID,
 						UserID:         u.Message.From.ID,
@@ -115,7 +110,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 				}),
 				handler.NewCommandHandler("/another_hello", func(u *models.TelegramUpdate) {
 					t.Log("Another Hello")
-					handler.UpdateState(sendHello, &handler.StateKey{
+					handler.UpdateState(end, &handler.StateKey{
 						ConversationID: "testUpload",
 						ChatID:         u.Message.Chat.ID,
 						UserID:         u.Message.From.ID,
@@ -125,14 +120,9 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 		},
 		handler.NewCommandHandler("/endUpload", func(u *models.TelegramUpdate) {
 			t.Log("End upload")
-			handler.UpdateState(end, &handler.StateKey{
-				ConversationID: "testUpload",
-				ChatID:         u.Message.Chat.ID,
-				UserID:         u.Message.From.ID,
-			})
 		}),
 	)
-	handler.AddHandler(conversationHandler)
+	dispatcher.AddHandler(conversationHandler)
 
 	// Mock update message channel
 	wg.Add(2)
@@ -152,11 +142,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 	go func() {
 		for i := 0; i < 3; i++ {
 			newUpdate := <-updateChan
-			for _, h := range handler.Handlers {
-				if h.ShouldHandle(&newUpdate) {
-					h.HandlerFunc(&newUpdate)
-				}
-			}
+			dispatcher.Dispatch(&newUpdate)
 		}
 		wg.Done()
 	}()
@@ -173,6 +159,8 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 		end
 	)
 
+	dispatcher := handler.NewUpdateDispatcher()
+
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
@@ -188,7 +176,7 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 			sendHello: {
 				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
 					t.Log("Hello")
-					handler.UpdateState(sendHello, &handler.StateKey{
+					handler.UpdateState(end, &handler.StateKey{
 						ConversationID: "testUpload",
 						ChatID:         u.Message.Chat.ID,
 						UserID:         u.Message.From.ID,
@@ -198,16 +186,12 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 		},
 		handler.NewCommandHandler("/endUpload", func(u *models.TelegramUpdate) {
 			t.Log("End upload")
-			handler.UpdateState(end, &handler.StateKey{
-				ConversationID: "testUpload",
-				ChatID:         u.Message.Chat.ID,
-				UserID:         u.Message.From.ID,
-			})
 		}),
 	)
 	conversationHandler.SetConversationTimeout(time.Second)
 	conversationHandler.SetTimeoutTask(func() { t.Log("Timeout") })
-	handler.AddHandler(conversationHandler)
+
+	dispatcher.AddHandler(conversationHandler)
 
 	// Mock update message channel
 	wg.Add(2)
@@ -224,11 +208,7 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 	go func() {
 		for i := 0; i < 2; i++ {
 			newUpdate := <-updateChan
-			for _, h := range handler.Handlers {
-				if h.ShouldHandle(&newUpdate) {
-					h.HandlerFunc(&newUpdate)
-				}
-			}
+			dispatcher.Dispatch(&newUpdate)
 		}
 		wg.Done()
 	}()
