@@ -4,6 +4,9 @@ import (
 	"github.com/slainsama/msgr_server/models"
 )
 
-func adminAddScriptController(newHandleUpdate models.HandleUpdate) {
+func init() {
+}
+
+func adminAddScriptController(u *models.TelegramUpdate) {
 
 }

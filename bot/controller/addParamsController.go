@@ -2,16 +2,26 @@ package controller
 
 import (
 	"fmt"
+
 	"github.com/slainsama/msgr_server/bot/botMethod"
+	botGlobals "github.com/slainsama/msgr_server/bot/globals"
+	"github.com/slainsama/msgr_server/bot/handler"
+	botUtils "github.com/slainsama/msgr_server/bot/utils"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
 )
 
-// AddParamsController "/addParams {taskId} {arg1} {arg2}"
-func AddParamsController(newHandleUpdate models.HandleUpdate) {
-	userId := newHandleUpdate.NewUpdate.Message.Chat.ID
-	taskId := newHandleUpdate.Args[0]
-	args := newHandleUpdate.Args[1:]
+func init() {
+	botGlobals.Dispatcher.AddHandler(handler.NewCommandHandler("/addParams", addParamsController))
+}
+
+// addParamsController "/addParams {taskId} {arg1} {arg2}"
+func addParamsController(u *models.TelegramUpdate) {
+	userId := u.Message.Chat.ID
+
+	commands, messageArgs := botUtils.ExtractCommands(u)
+	taskId := messageArgs[commands[0]][0]
+	args := messageArgs[commands[0]][1:]
 	//check taskId
 	if _, ok := globals.TaskList[taskId]; ok {
 		task := globals.TaskList[taskId]
