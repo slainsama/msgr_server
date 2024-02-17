@@ -19,15 +19,17 @@ var conversationState = make(map[StateKey]int)
 // conversationTimeout holds each user's conversation timeout timer
 var conversationTimeout = make(map[StateKey]*time.Timer)
 
+type HandlerMap map[int][]Handler
+
 type ConversationHandler struct {
 	conversationID string
 
 	startHandler         *CommandHandler
-	conversationHandlers map[int][]Handler
+	conversationHandlers HandlerMap
 	endHandler           *CommandHandler
 
 	conversationTimeout time.Duration
-	timeoutTask         func()
+	timeoutTask         func(u *models.TelegramUpdate)
 }
 
 func NewConversationHandler(
@@ -42,7 +44,7 @@ func NewConversationHandler(
 		conversationHandlers: conversationHandlers,
 		endHandler:           endHandler,
 		conversationTimeout:  time.Minute,
-		timeoutTask:          func() {},
+		timeoutTask:          func(u *models.TelegramUpdate) {},
 	}
 }
 
@@ -51,7 +53,7 @@ func (c *ConversationHandler) SetConversationTimeout(timeout time.Duration) {
 	c.conversationTimeout = timeout
 }
 
-func (c *ConversationHandler) SetTimeoutTask(task func()) {
+func (c *ConversationHandler) SetTimeoutTask(task func(u *models.TelegramUpdate)) {
 	c.timeoutTask = task
 }
 
@@ -61,7 +63,11 @@ func (c *ConversationHandler) ShouldHandle(u *models.TelegramUpdate) bool {
 		ChatID:         u.Message.Chat.ID,
 		UserID:         u.Message.From.ID,
 	}]
-	return ok || c.startHandler.ShouldHandle(u) || c.endHandler.ShouldHandle(u)
+	if c.startHandler.ShouldHandle(u) {
+		return !ok
+	} else {
+		return ok
+	}
 }
 
 func (c *ConversationHandler) HandlerFunc(u *models.TelegramUpdate) {
@@ -73,12 +79,16 @@ func (c *ConversationHandler) HandlerFunc(u *models.TelegramUpdate) {
 			ChatID:         u.Message.Chat.ID,
 			UserID:         u.Message.From.ID,
 		}
-		conversationTimeout[key] = time.AfterFunc(c.conversationTimeout, func() {
-			// Execute timeout task
-			c.timeoutTask()
-			// Remove the conversation state
-			delete(conversationState, key)
-		})
+
+		taskWrapper := func(u *models.TelegramUpdate) func() {
+			// Create a new task
+			return func() {
+				c.timeoutTask(u)
+				delete((conversationState), key)
+			}
+		}
+		task := taskWrapper(u)
+		conversationTimeout[key] = time.AfterFunc(c.conversationTimeout, task)
 
 		return
 	}
@@ -127,6 +137,11 @@ func (c *ConversationHandler) HandlerFunc(u *models.TelegramUpdate) {
 	}
 }
 
-func UpdateState(state int, key *StateKey) {
-	conversationState[*key] = state
+func UpdateState(conversationID string, state int, u *models.TelegramUpdate) {
+	key := StateKey{
+		ConversationID: conversationID,
+		ChatID:         u.Message.Chat.ID,
+		UserID:         u.Message.From.ID,
+	}
+	conversationState[key] = state
 }
