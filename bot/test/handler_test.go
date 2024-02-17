@@ -25,21 +25,13 @@ func TestNewConversationHandler(t *testing.T) {
 		"testUpload",
 		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
 			t.Log("Start upload")
-			handler.UpdateState(sendHello, &handler.StateKey{
-				ConversationID: "testUpload",
-				ChatID:         u.Message.Chat.ID,
-				UserID:         u.Message.From.ID,
-			})
+			handler.UpdateState("testUpload", sendHello, u)
 		}),
-		map[int][]handler.Handler{
+		handler.HandlerMap{
 			sendHello: {
 				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
 					t.Log("Hello")
-					handler.UpdateState(end, &handler.StateKey{
-						ConversationID: "testUpload",
-						ChatID:         u.Message.Chat.ID,
-						UserID:         u.Message.From.ID,
-					})
+					handler.UpdateState("testUpload", end, u)
 				}),
 			},
 		},
@@ -92,29 +84,17 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 		"testUpload",
 		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
 			t.Log("Start upload")
-			handler.UpdateState(sendHello, &handler.StateKey{
-				ConversationID: "testUpload",
-				ChatID:         u.Message.Chat.ID,
-				UserID:         u.Message.From.ID,
-			})
+			handler.UpdateState("testUpload", sendHello, u)
 		}),
-		map[int][]handler.Handler{
+		handler.HandlerMap{
 			sendHello: {
 				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
 					t.Log("Hello")
-					handler.UpdateState(end, &handler.StateKey{
-						ConversationID: "testUpload",
-						ChatID:         u.Message.Chat.ID,
-						UserID:         u.Message.From.ID,
-					})
+					handler.UpdateState("testUpload", end, u)
 				}),
 				handler.NewCommandHandler("/another_hello", func(u *models.TelegramUpdate) {
 					t.Log("Another Hello")
-					handler.UpdateState(end, &handler.StateKey{
-						ConversationID: "testUpload",
-						ChatID:         u.Message.Chat.ID,
-						UserID:         u.Message.From.ID,
-					})
+					handler.UpdateState("testUpload", end, u)
 				}),
 			},
 		},
@@ -166,21 +146,13 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 		"testUpload",
 		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
 			t.Log("Start upload")
-			handler.UpdateState(sendHello, &handler.StateKey{
-				ConversationID: "testUpload",
-				ChatID:         u.Message.Chat.ID,
-				UserID:         u.Message.From.ID,
-			})
+			handler.UpdateState("testUpload", sendHello, u)
 		}),
-		map[int][]handler.Handler{
+		handler.HandlerMap{
 			sendHello: {
 				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
 					t.Log("Hello")
-					handler.UpdateState(end, &handler.StateKey{
-						ConversationID: "testUpload",
-						ChatID:         u.Message.Chat.ID,
-						UserID:         u.Message.From.ID,
-					})
+					handler.UpdateState("testUpload", end, u)
 				}),
 			},
 		},
@@ -189,7 +161,7 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 		}),
 	)
 	conversationHandler.SetConversationTimeout(time.Second)
-	conversationHandler.SetTimeoutTask(func() { t.Log("Timeout") })
+	conversationHandler.SetTimeoutTask(func(u *models.TelegramUpdate) { t.Log("Timeout", u.Message.From.ID) })
 
 	dispatcher.AddHandler(conversationHandler)
 
