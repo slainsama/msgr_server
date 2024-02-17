@@ -8,7 +8,7 @@ import (
 )
 
 func TelegramBotControllerRegister(newUpdate models.TelegramUpdate) {
-	commands, args := botUtils.ExtractCommands(newUpdate)
+	commands, args := botUtils.ExtractCommands(&newUpdate)
 	for _, command := range commands {
 		newHandleUpdate := models.HandleUpdate{NewUpdate: newUpdate, Args: args[command]}
 		switch command {
