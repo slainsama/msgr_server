@@ -42,6 +42,7 @@ func NewConversationHandler(
 		ConversationHandlers: conversationHandlers,
 		EndHandler:           endHandler,
 		ConversationTimeout:  time.Minute,
+		TimeoutTask:          func() {},
 	}
 }
 
