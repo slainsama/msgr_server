@@ -2,10 +2,11 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/slainsama/msgr_server/models"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/slainsama/msgr_server/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/slainsama/msgr_server/globals"
@@ -32,7 +33,9 @@ func initLastUpdateID() {
 
 	// restore the last update message's id
 	newUpdates := messageJson.Result
-	lastUpdateId = newUpdates[0].UpdateID
+	if len(newUpdates) > 0 {
+		lastUpdateId = newUpdates[0].UpdateID
+	}
 }
 
 func WebhookMessageListenController(context *gin.Context) {
