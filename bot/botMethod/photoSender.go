@@ -9,7 +9,7 @@ import (
 	"github.com/slainsama/msgr_server/utils"
 )
 
-func SendPhotoMessage(chatID int, caption string, photo []byte) {
+func SendPhotoMessage(chatID int64, caption string, photo []byte) {
 
 	params := map[string]any{
 		"chat_id":    chatID,

@@ -3,7 +3,8 @@ package handler
 import "github.com/slainsama/msgr_server/bot/types"
 
 type UpdateDispatcher struct {
-	handlers []Handler
+	handlers  []Handler
+	userChans map[int64]chan *types.TelegramUpdate
 }
 
 func NewUpdateDispatcher() *UpdateDispatcher {

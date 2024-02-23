@@ -5,7 +5,7 @@ import "mime/multipart"
 type Task struct {
 	Id           string
 	ZygoteId     string
-	UserId       int
+	UserId       int64
 	ScriptName   string
 	IsLoop       bool
 	IsLongTerm   bool

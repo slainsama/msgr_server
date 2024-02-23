@@ -6,7 +6,7 @@ import (
 	"github.com/slainsama/msgr_server/models"
 )
 
-func TaskCreate(userId int) (task models.Task) {
+func TaskCreate(userId int64) (task models.Task) {
 	var newTask models.Task
 	newId := uuid.New().String()
 	newTask.Id = newId

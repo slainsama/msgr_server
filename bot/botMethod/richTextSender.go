@@ -11,10 +11,10 @@ import (
 )
 
 // SendTextMessage 待修改
-func SendTextMessage(chatId int, data string) {
+func SendTextMessage(chatId int64, data string) {
 	url := fmt.Sprintf(globals.APIEndpoint, globals.Config.Token, globals.MethodSendMessage)
 	params := map[string]string{
-		"chat_id":    strconv.Itoa(chatId),
+		"chat_id":    strconv.FormatInt(chatId, 10),
 		"text":       data,
 		"parse_mode": "MarkdownV2", // Send as Markdown text
 	}

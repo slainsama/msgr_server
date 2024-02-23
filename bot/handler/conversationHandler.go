@@ -9,8 +9,8 @@ import (
 // ConversationState is a map that represents the state of a conversation
 type StateKey struct {
 	ConversationID string
-	ChatID         int
-	UserID         int
+	ChatID         int64
+	UserID         int64
 }
 
 // conversationState is a map that stores the states of user
