@@ -6,9 +6,9 @@ import (
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	botGlobals "github.com/slainsama/msgr_server/bot/globals"
 	"github.com/slainsama/msgr_server/bot/handler"
+	"github.com/slainsama/msgr_server/bot/types"
 	botUtils "github.com/slainsama/msgr_server/bot/utils"
 	"github.com/slainsama/msgr_server/globals"
-	"github.com/slainsama/msgr_server/models"
 )
 
 func init() {
@@ -16,7 +16,7 @@ func init() {
 }
 
 // addParamsController "/addParams {taskId} {arg1} {arg2}"
-func addParamsController(u *models.TelegramUpdate) {
+func addParamsController(u *types.TelegramUpdate) {
 	userId := u.Message.Chat.ID
 
 	commands, messageArgs := botUtils.ExtractCommands(u)

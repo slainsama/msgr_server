@@ -6,9 +6,10 @@ import (
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	botGlobals "github.com/slainsama/msgr_server/bot/globals"
 	"github.com/slainsama/msgr_server/bot/handler"
+	"github.com/slainsama/msgr_server/bot/types"
+	botUtils "github.com/slainsama/msgr_server/bot/utils"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
-	"github.com/slainsama/msgr_server/utils"
 	"gorm.io/gorm"
 )
 
@@ -17,10 +18,10 @@ func init() {
 }
 
 // startController "/start"
-func startController(u *models.TelegramUpdate) {
+func startController(u *types.TelegramUpdate) {
 	userInfo := u.Message.From
 	var user models.User
-	var message models.Message
+	var message types.Message
 	message.ChatId = u.Message.Chat.ID
 	result := globals.DB.Where(models.User{ID: userInfo.ID}).First(&user)
 	if result.Error != nil {
@@ -36,11 +37,11 @@ func startController(u *models.TelegramUpdate) {
 				IsAdmin:      false,
 			}
 			globals.DB.Create(&newUser)
-			message.Data = utils.EscapeChar("welcome.")
+			message.Data = botUtils.EscapeChar("welcome.")
 			botMethod.SendTextMessage(message.ChatId, message.Data)
 		}
 	} else {
-		message.Data = utils.EscapeChar("user already exist.")
+		message.Data = botUtils.EscapeChar("user already exist.")
 		botMethod.SendTextMessage(message.ChatId, message.Data)
 	}
 }

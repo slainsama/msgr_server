@@ -1,4 +1,4 @@
-package models
+package types
 
 type Bot struct {
 	ID     int
@@ -42,6 +42,13 @@ type TelegramUpdate struct {
 			Length int    `json:"length"`
 			Type   string `json:"type"`
 		} `json:"entities"`
+		Document struct {
+			FileName     string `json:"file_name"`
+			MimeType     string `json:"mime_type"`
+			FileID       string `json:"file_id"`
+			FileUniqueID string `json:"file_unique_id"`
+			FileSize     int    `json:"file_size"`
+		} `json:"document"`
 	} `json:"message"`
 }
 
@@ -49,6 +56,18 @@ type TelegramUpdate struct {
 type TelegramUpdateResponse struct {
 	TelegramResponse
 	Result []TelegramUpdate `json:"result"`
+}
+
+type TelegramFile struct {
+	FileID       string `json:"file_id"`
+	FileUniqueID string `json:"file_unique_id"`
+	FileSize     int    `json:"file_size"`
+	FilePath     string `json:"file_path"`
+}
+
+type TelegramGetFileResponse struct {
+	TelegramResponse
+	Result TelegramFile `json:"result"`
 }
 
 type Entity struct {

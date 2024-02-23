@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/bot/types"
 )
 
 type Handler interface {
-	ShouldHandle(u *models.TelegramUpdate) bool
-	HandlerFunc(u *models.TelegramUpdate)
+	ShouldHandle(u *types.TelegramUpdate) bool
+	HandlerFunc(u *types.TelegramUpdate)
 }

@@ -3,12 +3,12 @@ package utils
 import (
 	"strings"
 
-	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/bot/types"
 )
 
-func ExtractCommands(u *models.TelegramUpdate) ([]string, map[string][]string) {
+func ExtractCommands(u *types.TelegramUpdate) ([]string, map[string][]string) {
 	// Extract command entities from the update
-	var commandEntities []models.Entity
+	var commandEntities []types.Entity
 	for _, entity := range u.Message.Entities {
 		if entity.Type == "bot_command" {
 			commandEntities = append(commandEntities, entity)
@@ -42,8 +42,8 @@ func ExtractCommands(u *models.TelegramUpdate) ([]string, map[string][]string) {
 	return commands, args
 }
 
-func ExtractCommandWithoutArgs(u *models.TelegramUpdate) []string {
-	var commandEntities []models.Entity
+func ExtractCommandWithoutArgs(u *types.TelegramUpdate) []string {
+	var commandEntities []types.Entity
 	var commands []string
 
 	for _, entity := range u.Message.Entities {

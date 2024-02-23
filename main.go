@@ -4,7 +4,8 @@ import (
 	"log"
 
 	"github.com/fvbock/endless"
-	"github.com/slainsama/msgr_server/bot"
+	"github.com/slainsama/msgr_server/bot/app"
+	"github.com/slainsama/msgr_server/bot/types"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/scriptController"
 	"github.com/slainsama/msgr_server/server"
@@ -13,7 +14,13 @@ import (
 func init() {
 	globals.Init()
 	server.Init()
-	bot.Init()
+
+	botConfig := types.BotConfig{
+		Token:      globals.UnmarshaledConfig.Bot.Token,
+		ScriptPath: globals.UnmarshaledConfig.Bot.ScriptPath,
+	}
+	app.InitBot(botConfig)
+
 	scriptController.Init()
 }
 

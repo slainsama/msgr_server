@@ -2,31 +2,29 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/slainsama/msgr_server/models"
-
 	"github.com/gin-gonic/gin"
-	"github.com/slainsama/msgr_server/globals"
+	"github.com/slainsama/msgr_server/bot/globals"
+	"github.com/slainsama/msgr_server/bot/types"
 	"github.com/slainsama/msgr_server/utils"
 )
 
 var lastUpdateId = 0
 
 func initLastUpdateID() {
-	config := globals.UnmarshaledConfig
-
 	// fetch the latest update message
-	baseURL := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.GetUpdates
+	baseURL := fmt.Sprintf(globals.APIEndpoint, globals.Config.Token, globals.MethodGetUpdates)
 	code, body, err := utils.HttpGET(baseURL, map[string]string{"offset": "-1"})
 	if err != nil || code != http.StatusOK {
 		log.Fatal(err)
 	}
 
 	// marshal the response body
-	var messageJson models.TelegramUpdateResponse
+	var messageJson types.TelegramUpdateResponse
 	if err := json.Unmarshal(body, &messageJson); err != nil {
 		log.Fatal(err)
 	}
@@ -39,25 +37,23 @@ func initLastUpdateID() {
 }
 
 func WebhookMessageListenController(context *gin.Context) {
-	var messageJson models.TelegramUpdateResponse
+	var messageJson types.TelegramUpdateResponse
 	err := context.ShouldBind(&messageJson)
 	if err != nil {
 		log.Println(err)
 	}
-	if messageJson.OK != true {
+	if !messageJson.OK {
 		log.Println("err webhook.")
 		context.Abort()
 	}
 	newUpdates := messageJson.Result
 	for _, update := range newUpdates {
-		globals.MessageChannel <- update //消息入队
+		messageChannel <- update //消息入队
 	}
 }
 
 func requestMessageListenController() {
-	config := globals.UnmarshaledConfig
-
-	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.GetUpdates
+	url := fmt.Sprintf(globals.APIEndpoint, globals.Config.Token, globals.MethodGetUpdates)
 	code, body, err := utils.HttpGET(url, nil)
 	if err != nil || code != http.StatusOK {
 		log.Println(err)
@@ -65,7 +61,7 @@ func requestMessageListenController() {
 	}
 
 	// marshal the response body
-	var messageJson models.TelegramUpdateResponse
+	var messageJson types.TelegramUpdateResponse
 	if err := json.Unmarshal(body, &messageJson); err != nil {
 		log.Fatal(err)
 	}
@@ -73,7 +69,7 @@ func requestMessageListenController() {
 	newUpdates := messageJson.Result
 	for _, update := range newUpdates {
 		if update.UpdateID > lastUpdateId {
-			globals.MessageChannel <- update //消息入队
+			messageChannel <- update //消息入队
 			lastUpdateId = update.UpdateID
 		}
 	}

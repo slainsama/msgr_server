@@ -17,13 +17,8 @@ type Config struct {
 		Cors   bool `yaml:"cors"`
 	}
 	Bot struct {
-		APIUrl    string `yaml:"apiUrl"`
-		Token     string `yaml:"token"`
-		GetUpdate string `yaml:"getUpdate"`
-		Methods   struct {
-			SendMessage string `yaml:"sendMessage"`
-			SendPhoto   string `yaml:"sendPhoto"`
-			GetUpdates  string `yaml:"getUpdates"`
-		}
+		Token      string `yaml:"token"`
+		ScriptPath string `yaml:"scriptPath"`
+		GetUpdate  string `yaml:"getUpdate"`
 	}
 }
