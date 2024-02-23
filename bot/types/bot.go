@@ -1,4 +1,4 @@
-package models
+package types
 
 type Bot struct {
 	ID     int
@@ -7,7 +7,7 @@ type Bot struct {
 }
 
 type Message struct {
-	ChatId int    `xml:"chat_id"`
+	ChatId int64  `xml:"chat_id"`
 	Data   string `xml:"text"`
 }
 
@@ -21,7 +21,7 @@ type TelegramUpdate struct {
 	Message  struct {
 		MessageID int `json:"message_id"`
 		From      struct {
-			ID           int    `json:"id"`
+			ID           int64  `json:"id"`
 			IsBot        bool   `json:"is_bot"`
 			FirstName    string `json:"first_name"`
 			LastName     string `json:"last_name"`
@@ -29,7 +29,7 @@ type TelegramUpdate struct {
 			LanguageCode string `json:"language_code"`
 		} `json:"from"`
 		Chat struct {
-			ID        int    `json:"id"`
+			ID        int64  `json:"id"`
 			FirstName string `json:"first_name"`
 			LastName  string `json:"last_name"`
 			Username  string `json:"username"`
@@ -42,6 +42,13 @@ type TelegramUpdate struct {
 			Length int    `json:"length"`
 			Type   string `json:"type"`
 		} `json:"entities"`
+		Document struct {
+			FileName     string `json:"file_name"`
+			MimeType     string `json:"mime_type"`
+			FileID       string `json:"file_id"`
+			FileUniqueID string `json:"file_unique_id"`
+			FileSize     int64  `json:"file_size"`
+		} `json:"document"`
 	} `json:"message"`
 }
 
@@ -49,6 +56,18 @@ type TelegramUpdate struct {
 type TelegramUpdateResponse struct {
 	TelegramResponse
 	Result []TelegramUpdate `json:"result"`
+}
+
+type TelegramFile struct {
+	FileID       string `json:"file_id"`
+	FileUniqueID string `json:"file_unique_id"`
+	FileSize     int    `json:"file_size"`
+	FilePath     string `json:"file_path"`
+}
+
+type TelegramGetFileResponse struct {
+	TelegramResponse
+	Result TelegramFile `json:"result"`
 }
 
 type Entity struct {

@@ -3,14 +3,14 @@ package handler
 import (
 	"time"
 
-	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/bot/types"
 )
 
 // ConversationState is a map that represents the state of a conversation
 type StateKey struct {
 	ConversationID string
-	ChatID         int
-	UserID         int
+	ChatID         int64
+	UserID         int64
 }
 
 // conversationState is a map that stores the states of user
@@ -29,7 +29,7 @@ type ConversationHandler struct {
 	endHandler           *CommandHandler
 
 	conversationTimeout time.Duration
-	timeoutTask         func(u *models.TelegramUpdate)
+	timeoutTask         func(u *types.TelegramUpdate)
 }
 
 func NewConversationHandler(
@@ -44,7 +44,7 @@ func NewConversationHandler(
 		conversationHandlers: conversationHandlers,
 		endHandler:           endHandler,
 		conversationTimeout:  time.Minute,
-		timeoutTask:          func(u *models.TelegramUpdate) {},
+		timeoutTask:          func(u *types.TelegramUpdate) {},
 	}
 }
 
@@ -53,11 +53,11 @@ func (c *ConversationHandler) SetConversationTimeout(timeout time.Duration) {
 	c.conversationTimeout = timeout
 }
 
-func (c *ConversationHandler) SetTimeoutTask(task func(u *models.TelegramUpdate)) {
+func (c *ConversationHandler) SetTimeoutTask(task func(u *types.TelegramUpdate)) {
 	c.timeoutTask = task
 }
 
-func (c *ConversationHandler) ShouldHandle(u *models.TelegramUpdate) bool {
+func (c *ConversationHandler) ShouldHandle(u *types.TelegramUpdate) bool {
 	_, ok := conversationState[StateKey{
 		ConversationID: c.conversationID,
 		ChatID:         u.Message.Chat.ID,
@@ -70,7 +70,7 @@ func (c *ConversationHandler) ShouldHandle(u *models.TelegramUpdate) bool {
 	}
 }
 
-func (c *ConversationHandler) HandlerFunc(u *models.TelegramUpdate) {
+func (c *ConversationHandler) HandlerFunc(u *types.TelegramUpdate) {
 	if c.startHandler.ShouldHandle(u) {
 		c.startHandler.HandlerFunc(u)
 
@@ -80,7 +80,7 @@ func (c *ConversationHandler) HandlerFunc(u *models.TelegramUpdate) {
 			UserID:         u.Message.From.ID,
 		}
 
-		taskWrapper := func(u *models.TelegramUpdate) func() {
+		taskWrapper := func(u *types.TelegramUpdate) func() {
 			// Create a new task
 			return func() {
 				c.timeoutTask(u)
@@ -137,7 +137,7 @@ func (c *ConversationHandler) HandlerFunc(u *models.TelegramUpdate) {
 	}
 }
 
-func UpdateState(conversationID string, state int, u *models.TelegramUpdate) {
+func UpdateState(conversationID string, state int, u *types.TelegramUpdate) {
 	key := StateKey{
 		ConversationID: conversationID,
 		ChatID:         u.Message.Chat.ID,

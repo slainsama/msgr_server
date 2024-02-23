@@ -9,6 +9,7 @@ import (
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	botGlobals "github.com/slainsama/msgr_server/bot/globals"
 	"github.com/slainsama/msgr_server/bot/handler"
+	"github.com/slainsama/msgr_server/bot/types"
 	botUtils "github.com/slainsama/msgr_server/bot/utils"
 	"github.com/slainsama/msgr_server/globals"
 	"github.com/slainsama/msgr_server/models"
@@ -21,7 +22,7 @@ func init() {
 	botGlobals.Dispatcher.AddHandler(handler.NewCommandHandler("/tasks", getUserTaskController))
 }
 
-func getUserTaskController(u *models.TelegramUpdate) {
+func getUserTaskController(u *types.TelegramUpdate) {
 	userId := u.Message.Chat.ID
 	var message string
 	for _, task := range globals.TaskList {
@@ -33,7 +34,7 @@ func getUserTaskController(u *models.TelegramUpdate) {
 }
 
 // createUserTaskController "/createTask {scriptName}"
-func createUserTaskController(u *models.TelegramUpdate) {
+func createUserTaskController(u *types.TelegramUpdate) {
 	userId := u.Message.Chat.ID
 
 	commands, messageArgs := botUtils.ExtractCommands(u)

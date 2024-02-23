@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/slainsama/msgr_server/bot/handler"
-	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/bot/types"
 )
 
 func TestNewConversationHandler(t *testing.T) {
-	updateChan := make(chan models.TelegramUpdate, 5)
+	updateChan := make(chan types.TelegramUpdate, 5)
 	var wg sync.WaitGroup
 	const (
 		start = iota
@@ -23,19 +23,19 @@ func TestNewConversationHandler(t *testing.T) {
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
-		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
+		handler.NewCommandHandler("/startUpload", func(u *types.TelegramUpdate) {
 			t.Log("Start upload")
 			handler.UpdateState("testUpload", sendHello, u)
 		}),
 		handler.HandlerMap{
 			sendHello: {
-				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
+				handler.NewCommandHandler("/hello", func(u *types.TelegramUpdate) {
 					t.Log("Hello")
 					handler.UpdateState("testUpload", end, u)
 				}),
 			},
 		},
-		handler.NewCommandHandler("/endUpload", func(u *models.TelegramUpdate) {
+		handler.NewCommandHandler("/endUpload", func(u *types.TelegramUpdate) {
 			t.Log("End upload")
 		}),
 	)
@@ -69,7 +69,7 @@ func TestNewConversationHandler(t *testing.T) {
 }
 
 func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
-	updateChan := make(chan models.TelegramUpdate, 5)
+	updateChan := make(chan types.TelegramUpdate, 5)
 	var wg sync.WaitGroup
 	const (
 		start = iota
@@ -82,23 +82,23 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
-		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
+		handler.NewCommandHandler("/startUpload", func(u *types.TelegramUpdate) {
 			t.Log("Start upload")
 			handler.UpdateState("testUpload", sendHello, u)
 		}),
 		handler.HandlerMap{
 			sendHello: {
-				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
+				handler.NewCommandHandler("/hello", func(u *types.TelegramUpdate) {
 					t.Log("Hello")
 					handler.UpdateState("testUpload", end, u)
 				}),
-				handler.NewCommandHandler("/another_hello", func(u *models.TelegramUpdate) {
+				handler.NewCommandHandler("/another_hello", func(u *types.TelegramUpdate) {
 					t.Log("Another Hello")
 					handler.UpdateState("testUpload", end, u)
 				}),
 			},
 		},
-		handler.NewCommandHandler("/endUpload", func(u *models.TelegramUpdate) {
+		handler.NewCommandHandler("/endUpload", func(u *types.TelegramUpdate) {
 			t.Log("End upload")
 		}),
 	)
@@ -131,7 +131,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 }
 
 func TestConversationHandlerWithTimeout(t *testing.T) {
-	updateChan := make(chan models.TelegramUpdate, 5)
+	updateChan := make(chan types.TelegramUpdate, 5)
 	var wg sync.WaitGroup
 	const (
 		start = iota
@@ -144,24 +144,24 @@ func TestConversationHandlerWithTimeout(t *testing.T) {
 	// Initialize conversation handler
 	conversationHandler := handler.NewConversationHandler(
 		"testUpload",
-		handler.NewCommandHandler("/startUpload", func(u *models.TelegramUpdate) {
+		handler.NewCommandHandler("/startUpload", func(u *types.TelegramUpdate) {
 			t.Log("Start upload")
 			handler.UpdateState("testUpload", sendHello, u)
 		}),
 		handler.HandlerMap{
 			sendHello: {
-				handler.NewCommandHandler("/hello", func(u *models.TelegramUpdate) {
+				handler.NewCommandHandler("/hello", func(u *types.TelegramUpdate) {
 					t.Log("Hello")
 					handler.UpdateState("testUpload", end, u)
 				}),
 			},
 		},
-		handler.NewCommandHandler("/endUpload", func(u *models.TelegramUpdate) {
+		handler.NewCommandHandler("/endUpload", func(u *types.TelegramUpdate) {
 			t.Log("End upload")
 		}),
 	)
 	conversationHandler.SetConversationTimeout(time.Second)
-	conversationHandler.SetTimeoutTask(func(u *models.TelegramUpdate) { t.Log("Timeout", u.Message.From.ID) })
+	conversationHandler.SetTimeoutTask(func(u *types.TelegramUpdate) { t.Log("Timeout", u.Message.From.ID) })
 
 	dispatcher.AddHandler(conversationHandler)
 

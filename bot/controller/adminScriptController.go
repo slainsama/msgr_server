@@ -1,10 +1,17 @@
 package controller
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
 	"github.com/slainsama/msgr_server/bot/botMethod"
-	"github.com/slainsama/msgr_server/bot/globals"
+	botGlobals "github.com/slainsama/msgr_server/bot/globals"
 	"github.com/slainsama/msgr_server/bot/handler"
-	"github.com/slainsama/msgr_server/models"
+	"github.com/slainsama/msgr_server/bot/types"
+	botUtils "github.com/slainsama/msgr_server/bot/utils"
+	"github.com/slainsama/msgr_server/utils"
 )
 
 const (
@@ -15,38 +22,73 @@ const (
 
 func init() {
 	startHandler := handler.NewCommandHandler("/admin_upload_script", adminScriptStartController)
-	uploadHandler := handler.NewCommandHandler("/upload", adminAddScriptController)
 	endHandler := handler.NewCommandHandler("/admin_end_script", adminScriptEndController)
 
 	h := handler.NewConversationHandler(
 		"admin_add_script",
 		startHandler,
-		handler.HandlerMap{uploadScript: {uploadHandler}},
+		handler.HandlerMap{
+			uploadScript: []handler.Handler{
+				&AdminUploadScriptHandler{},
+			},
+		},
 		endHandler,
 	)
 	h.SetTimeoutTask(adminAddScriptTimeoutController)
 
-	globals.Dispatcher.AddHandler(h)
+	botGlobals.Dispatcher.AddHandler(h)
 }
 
-func adminAddScriptTimeoutController(u *models.TelegramUpdate) {
+func adminAddScriptTimeoutController(u *types.TelegramUpdate) {
 	userID := u.Message.From.ID
 	botMethod.SendTextMessage(userID, "Timeout")
 }
 
-func adminScriptStartController(u *models.TelegramUpdate) {
+func adminScriptStartController(u *types.TelegramUpdate) {
 	userID := u.Message.From.ID
-	botMethod.SendTextMessage(userID, "Please send the script name")
+	botMethod.SendTextMessage(userID, "Please send the script file")
 	handler.UpdateState("admin_add_script", uploadScript, u)
 }
 
-func adminAddScriptController(u *models.TelegramUpdate) {
-	userID := u.Message.From.ID
-	botMethod.SendTextMessage(userID, "test test")
-	handler.UpdateState("admin_add_script", end, u)
-}
-
-func adminScriptEndController(u *models.TelegramUpdate) {
+func adminScriptEndController(u *types.TelegramUpdate) {
 	userID := u.Message.From.ID
 	botMethod.SendTextMessage(userID, "process stopped")
+}
+
+// Implement the handler for the uploadScript state
+type AdminUploadScriptHandler struct {
+}
+
+func (h *AdminUploadScriptHandler) ShouldHandle(u *types.TelegramUpdate) bool {
+	return u.Message.Document.FileSize != 0
+}
+
+func (h *AdminUploadScriptHandler) HandlerFunc(u *types.TelegramUpdate) {
+	FileID := u.Message.Document.FileID
+	file := botMethod.GetFile(FileID)
+
+	if file != nil {
+		fileURL := fmt.Sprintf(botGlobals.FileEndpoint, botGlobals.Config.Token, file.FilePath)
+		_, fileBytes, err := utils.HttpGET(fileURL, nil)
+		if err != nil {
+			log.Println(err)
+			sendMsg := "Error getting file, please try again."
+			botMethod.SendTextMessage(u.Message.From.ID, botUtils.EscapeChar(sendMsg))
+			return
+		}
+
+		// Store fileBytes to filesystem
+		s := strings.Split(file.FilePath, "/")
+		filePath := botGlobals.Config.ScriptPath + "/" + s[len(s)-1]
+
+		if err := os.WriteFile(filePath, fileBytes, 0644); err != nil {
+			log.Println(err)
+			sendMsg := "Error saving file, please try again."
+			botMethod.SendTextMessage(u.Message.From.ID, botUtils.EscapeChar(sendMsg))
+			return
+		}
+	} else {
+		sendMsg := "Error getting file, please try again."
+		botMethod.SendTextMessage(u.Message.From.ID, botUtils.EscapeChar(sendMsg))
+	}
 }

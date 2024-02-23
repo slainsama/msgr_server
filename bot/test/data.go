@@ -1,9 +1,11 @@
 package test
 
-import "github.com/slainsama/msgr_server/models"
+import (
+	"github.com/slainsama/msgr_server/bot/types"
+)
 
-func newStartUpdate() models.TelegramUpdate {
-	startUpdate := models.TelegramUpdate{}
+func newStartUpdate() types.TelegramUpdate {
+	startUpdate := types.TelegramUpdate{}
 	startUpdate.Message.Text = "/startUpload"
 	startUpdate.Message.Chat.ID = 123
 	startUpdate.Message.From.ID = 123
@@ -19,8 +21,8 @@ func newStartUpdate() models.TelegramUpdate {
 	return startUpdate
 }
 
-func newHelloUpdate() models.TelegramUpdate {
-	helloUpdate := models.TelegramUpdate{}
+func newHelloUpdate() types.TelegramUpdate {
+	helloUpdate := types.TelegramUpdate{}
 	helloUpdate.Message.Text = "/hello"
 	helloUpdate.Message.Chat.ID = 123
 	helloUpdate.Message.From.ID = 123
@@ -36,8 +38,8 @@ func newHelloUpdate() models.TelegramUpdate {
 	return helloUpdate
 }
 
-func newMultiCommandHelloUpdate() models.TelegramUpdate {
-	multiCommandHelloUpdate := models.TelegramUpdate{}
+func newMultiCommandHelloUpdate() types.TelegramUpdate {
+	multiCommandHelloUpdate := types.TelegramUpdate{}
 	multiCommandHelloUpdate.Message.Text = "/hello 1 2 3 /another_hello 1 2 3 4 5 6"
 	multiCommandHelloUpdate.Message.Chat.ID = 123
 	multiCommandHelloUpdate.Message.From.ID = 123
@@ -62,8 +64,8 @@ func newMultiCommandHelloUpdate() models.TelegramUpdate {
 	return multiCommandHelloUpdate
 }
 
-func newAnotherHelloUpdate() models.TelegramUpdate {
-	anotherHelloUpdate := models.TelegramUpdate{}
+func newAnotherHelloUpdate() types.TelegramUpdate {
+	anotherHelloUpdate := types.TelegramUpdate{}
 	anotherHelloUpdate.Message.Text = "/another_hello"
 	anotherHelloUpdate.Message.Chat.ID = 123
 	anotherHelloUpdate.Message.From.ID = 123
@@ -79,8 +81,8 @@ func newAnotherHelloUpdate() models.TelegramUpdate {
 	return anotherHelloUpdate
 }
 
-func newEndUpdate() models.TelegramUpdate {
-	endUpdate := models.TelegramUpdate{}
+func newEndUpdate() types.TelegramUpdate {
+	endUpdate := types.TelegramUpdate{}
 	endUpdate.Message.Text = "/endUpload"
 	endUpdate.Message.Chat.ID = 123
 	endUpdate.Message.From.ID = 123

@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	ID           int
+	ID           int64
 	IsBot        bool
 	FirstName    string
 	LastName     string

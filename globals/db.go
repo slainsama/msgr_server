@@ -2,10 +2,11 @@ package globals
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/slainsama/msgr_server/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
 )
 
 var DB *gorm.DB
@@ -21,11 +22,14 @@ func initDB() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 	err = DB.AutoMigrate(&models.User{})
 	if err != nil {
 		log.Println(err)
 	}
 	err = DB.AutoMigrate(&models.Script{})
+	if err != nil {
+		log.Println(err)
+	}
 }

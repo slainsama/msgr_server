@@ -1,9 +1,10 @@
 package handler
 
-import "github.com/slainsama/msgr_server/models"
+import "github.com/slainsama/msgr_server/bot/types"
 
 type UpdateDispatcher struct {
-	handlers []Handler
+	handlers  []Handler
+	userChans map[int64]chan *types.TelegramUpdate
 }
 
 func NewUpdateDispatcher() *UpdateDispatcher {
@@ -14,7 +15,7 @@ func (u *UpdateDispatcher) AddHandler(h Handler) {
 	u.handlers = append(u.handlers, h)
 }
 
-func (u *UpdateDispatcher) Dispatch(tu *models.TelegramUpdate) {
+func (u *UpdateDispatcher) Dispatch(tu *types.TelegramUpdate) {
 	for _, h := range u.handlers {
 		if h.ShouldHandle(tu) {
 			go h.HandlerFunc(tu)

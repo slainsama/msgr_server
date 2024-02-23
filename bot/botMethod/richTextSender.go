@@ -1,21 +1,20 @@
 package botMethod
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/slainsama/msgr_server/globals"
+	"github.com/slainsama/msgr_server/bot/globals"
 	"github.com/slainsama/msgr_server/utils"
 )
 
 // SendTextMessage 待修改
-func SendTextMessage(chatId int, data string) {
-	config := globals.UnmarshaledConfig
-
-	url := config.Bot.APIUrl + config.Bot.Token + config.Bot.Methods.SendMessage
+func SendTextMessage(chatId int64, data string) {
+	url := fmt.Sprintf(globals.APIEndpoint, globals.Config.Token, globals.MethodSendMessage)
 	params := map[string]string{
-		"chat_id":    strconv.Itoa(chatId),
+		"chat_id":    strconv.FormatInt(chatId, 10),
 		"text":       data,
 		"parse_mode": "MarkdownV2", // Send as Markdown text
 	}
@@ -26,51 +25,3 @@ func SendTextMessage(chatId int, data string) {
 		return
 	}
 }
-
-/*
-func SendPhotoMessage(msg string) {
-	message := handleMsg(msg)
-	url := globals.UnmarshaledConfig.Bot.Token + "sendPhoto"
-	params := map[string]string{
-		"chat_id": message.ChatId,
-		"photo":   message.Photo,
-	}
-	reqURL := buildURL(url, params)
-	response, err := http.Get(reqURL)
-	if err != nil {
-		log.Println("Error sending GET request:", err)
-		return
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Println("Error closing :", err)
-		}
-	}(response.Body)
-	var buf bytes.Buffer
-	_, err = io.Copy(&buf, response.Body)
-	if err != nil {
-		log.Println("Error reading response body:", err)
-		return
-	}
-	log.Println("Response Body:", buf.String())
-}
-*/
-
-/*
-func handleMsg(msg string) *botModels.Message {
-	decodedMsgBytes, err := base64.StdEncoding.DecodeString(msg)
-	if err != nil {
-		log.Println("Error decode base64:", err)
-		return nil
-	}
-	msg = string(decodedMsgBytes)
-	var message = new(botModels.Message)
-	err = xml.Unmarshal([]byte(msg), &message)
-	if err != nil {
-		log.Println("Error unmarshalling XML:", err)
-		return nil
-	}
-	return message
-}
-*/

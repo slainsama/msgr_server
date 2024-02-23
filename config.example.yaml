@@ -11,10 +11,6 @@ debug:
   login: true
   cors: true
 bot:
-  apiUrl: 'https://api.telegram.org/bot'
   token: ''
   getUpdate: 'request' # how to get update (webhook/request)
-  methods: # methods for request start with "/"
-    sendMessage: "/sendMessage"
-    sendPhoto: "/sendPhoto"
-    getUpdates: "/getUpdates"
+  scriptPath: '/tmp/msgr_bot' # path to save files
