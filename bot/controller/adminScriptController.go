@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	botGlobals "github.com/slainsama/msgr_server/bot/globals"
@@ -25,45 +26,45 @@ func init() {
 	endHandler := handler.NewCommandHandler("/admin_end_script", adminScriptEndController)
 
 	h := handler.NewConversationHandler(
-		"admin_add_script",
-		startHandler,
-		handler.HandlerMap{
-			uploadScript: []handler.Handler{
-				&AdminUploadScriptHandler{},
-			},
+		handler.NewLocalPersistence(),
+
+		handler.StateMap{
+			start:        {startHandler},
+			uploadScript: {},
+			end:          {endHandler},
 		},
-		endHandler,
+		[]*handler.Handler{endHandler},
+		time.Minute,
+		adminAddScriptTimeoutController,
+		handler.NewKeyLock(),
 	)
-	h.SetTimeoutTask(adminAddScriptTimeoutController)
 
 	botGlobals.Dispatcher.AddHandler(h)
 }
 
-func adminAddScriptTimeoutController(u *types.TelegramUpdate) {
+func adminAddScriptTimeoutController(u *types.TelegramUpdate) int {
 	userID := u.Message.From.ID
 	botMethod.SendTextMessage(userID, "Timeout")
+	return handler.HandleSuccess
 }
 
-func adminScriptStartController(u *types.TelegramUpdate) {
+func adminScriptStartController(u *types.TelegramUpdate) int {
 	userID := u.Message.From.ID
 	botMethod.SendTextMessage(userID, "Please send the script file")
-	handler.UpdateState("admin_add_script", uploadScript, u)
+	return uploadScript
 }
 
-func adminScriptEndController(u *types.TelegramUpdate) {
+func adminScriptEndController(u *types.TelegramUpdate) int {
 	userID := u.Message.From.ID
 	botMethod.SendTextMessage(userID, "process stopped")
+	return handler.HandleSuccess
 }
 
-// Implement the handler for the uploadScript state
-type AdminUploadScriptHandler struct {
-}
-
-func (h *AdminUploadScriptHandler) ShouldHandle(u *types.TelegramUpdate) bool {
+func ShouldHandle(u *types.TelegramUpdate) bool {
 	return u.Message.Document.FileSize != 0
 }
 
-func (h *AdminUploadScriptHandler) HandlerFunc(u *types.TelegramUpdate) {
+func HandlerFunc(u *types.TelegramUpdate) {
 	FileID := u.Message.Document.FileID
 	file := botMethod.GetFile(FileID)
 

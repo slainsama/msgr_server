@@ -22,7 +22,7 @@ func init() {
 	botGlobals.Dispatcher.AddHandler(handler.NewCommandHandler("/tasks", getUserTaskController))
 }
 
-func getUserTaskController(u *types.TelegramUpdate) {
+func getUserTaskController(u *types.TelegramUpdate) int {
 	userId := u.Message.Chat.ID
 	var message string
 	for _, task := range globals.TaskList {
@@ -31,10 +31,11 @@ func getUserTaskController(u *types.TelegramUpdate) {
 		}
 	}
 	botMethod.SendTextMessage(userId, message)
+	return handler.HandleSuccess
 }
 
 // createUserTaskController "/createTask {scriptName}"
-func createUserTaskController(u *types.TelegramUpdate) {
+func createUserTaskController(u *types.TelegramUpdate) int {
 	userId := u.Message.Chat.ID
 
 	commands, messageArgs := botUtils.ExtractCommands(u)
@@ -44,11 +45,11 @@ func createUserTaskController(u *types.TelegramUpdate) {
 		if errors.Is(gorm.ErrRecordNotFound, result.Error) {
 			// 记录不存在
 			botMethod.SendTextMessage(userId, fmt.Sprintf("no script named %s", args[0]))
-			return
+			return handler.HandleFailed
 		} else {
 			// 其他错误
 			log.Println(result.Error)
-			panic(result.Error)
+			return handler.HandleFailed
 		}
 	}
 	/*
@@ -72,4 +73,6 @@ func createUserTaskController(u *types.TelegramUpdate) {
 		MemoryLimit: "",
 	})
 	newTask.ZygoteId = zygoteUuid
+
+	return handler.HandleSuccess
 }

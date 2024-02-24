@@ -18,12 +18,12 @@ func init() {
 }
 
 // startController "/start"
-func startController(u *types.TelegramUpdate) {
+func startController(u *types.TelegramUpdate) int {
 	userInfo := u.Message.From
+
 	var user models.User
-	var message types.Message
-	message.ChatId = u.Message.Chat.ID
 	result := globals.DB.Where(models.User{ID: userInfo.ID}).First(&user)
+
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			// 如果记录不存在，则创建新记录
@@ -32,16 +32,15 @@ func startController(u *types.TelegramUpdate) {
 				IsBot:        userInfo.IsBot,
 				FirstName:    userInfo.FirstName,
 				LastName:     userInfo.LastName,
-				Username:     userInfo.Username,
+				Username:     userInfo.UserName,
 				LanguageCode: userInfo.LanguageCode,
 				IsAdmin:      false,
 			}
 			globals.DB.Create(&newUser)
-			message.Data = botUtils.EscapeChar("welcome.")
-			botMethod.SendTextMessage(message.ChatId, message.Data)
+			botMethod.SendTextMessage(u.Message.From.ID, botUtils.EscapeChar("welcome."))
 		}
 	} else {
-		message.Data = botUtils.EscapeChar("user already exist.")
-		botMethod.SendTextMessage(message.ChatId, message.Data)
+		botMethod.SendTextMessage(u.Message.From.ID, botUtils.EscapeChar("user already exist."))
 	}
+	return handler.HandleSuccess
 }
