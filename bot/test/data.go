@@ -25,6 +25,27 @@ func newStartUpdate() types.TelegramUpdate {
 	})
 	return startUpdate
 }
+func newStartWithoutPermissionUpdate() types.TelegramUpdate {
+	startUpdate := types.TelegramUpdate{}
+
+	startUpdate.Message = &types.Message{}
+	startUpdate.Message.Text = "/startUpload"
+	startUpdate.Message.Chat = &types.Chat{}
+	startUpdate.Message.Chat.ID = 123
+	startUpdate.Message.From = &types.User{}
+	startUpdate.Message.From.ID = 426
+
+	startUpdate.Message.Entities = append(startUpdate.Message.Entities, struct {
+		Offset int    "json:\"offset\""
+		Length int    "json:\"length\""
+		Type   string "json:\"type\""
+	}{
+		Offset: 0,
+		Length: 12,
+		Type:   "bot_command",
+	})
+	return startUpdate
+}
 
 func newHelloUpdate() types.TelegramUpdate {
 	helloUpdate := types.TelegramUpdate{}
@@ -34,6 +55,26 @@ func newHelloUpdate() types.TelegramUpdate {
 	helloUpdate.Message.Chat.ID = 123
 	helloUpdate.Message.From = &types.User{}
 	helloUpdate.Message.From.ID = 123
+	helloUpdate.Message.Entities = append(helloUpdate.Message.Entities, struct {
+		Offset int    "json:\"offset\""
+		Length int    "json:\"length\""
+		Type   string "json:\"type\""
+	}{
+		Offset: 0,
+		Length: 6,
+		Type:   "bot_command",
+	})
+	return helloUpdate
+}
+
+func newHelloWithoutPermissionUpdate() types.TelegramUpdate {
+	helloUpdate := types.TelegramUpdate{}
+	helloUpdate.Message = &types.Message{}
+	helloUpdate.Message.Text = "/hello"
+	helloUpdate.Message.Chat = &types.Chat{}
+	helloUpdate.Message.Chat.ID = 123
+	helloUpdate.Message.From = &types.User{}
+	helloUpdate.Message.From.ID = 426
 	helloUpdate.Message.Entities = append(helloUpdate.Message.Entities, struct {
 		Offset int    "json:\"offset\""
 		Length int    "json:\"length\""
@@ -83,26 +124,6 @@ func newAnotherHelloUpdate() types.TelegramUpdate {
 	anotherHelloUpdate.Message.Chat.ID = 123
 	anotherHelloUpdate.Message.From = &types.User{}
 	anotherHelloUpdate.Message.From.ID = 123
-	anotherHelloUpdate.Message.Entities = append(anotherHelloUpdate.Message.Entities, struct {
-		Offset int    "json:\"offset\""
-		Length int    "json:\"length\""
-		Type   string "json:\"type\""
-	}{
-		Offset: 0,
-		Length: 14,
-		Type:   "bot_command",
-	})
-	return anotherHelloUpdate
-}
-
-func newHelloWithoutPermissionUpdate() types.TelegramUpdate {
-	anotherHelloUpdate := types.TelegramUpdate{}
-	anotherHelloUpdate.Message = &types.Message{}
-	anotherHelloUpdate.Message.Text = "/another_hello"
-	anotherHelloUpdate.Message.Chat = &types.Chat{}
-	anotherHelloUpdate.Message.Chat.ID = 123
-	anotherHelloUpdate.Message.From = &types.User{}
-	anotherHelloUpdate.Message.From.ID = 246
 	anotherHelloUpdate.Message.Entities = append(anotherHelloUpdate.Message.Entities, struct {
 		Offset int    "json:\"offset\""
 		Length int    "json:\"length\""

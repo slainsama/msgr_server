@@ -56,13 +56,10 @@ func TestNewConversationHandler(t *testing.T) {
 	go func() {
 		// Send start message
 		updateChan <- newStartUpdate()
-		time.Sleep(time.Second)
 		// Send message
 		updateChan <- newHelloUpdate()
-		time.Sleep(time.Second)
 		// Send end message
 		updateChan <- newEndUpdate()
-		time.Sleep(time.Second)
 
 		wg.Done()
 	}()
@@ -74,6 +71,7 @@ func TestNewConversationHandler(t *testing.T) {
 		}
 		wg.Done()
 	}()
+	time.Sleep(time.Second)
 
 	wg.Wait()
 }
@@ -129,13 +127,10 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 	go func() {
 		// Send start message
 		updateChan <- newStartUpdate()
-		time.Sleep(time.Second)
 		// Send message
 		updateChan <- newAnotherHelloUpdate()
-		time.Sleep(time.Second)
 		// Send end message
 		updateChan <- newEndUpdate()
-		time.Sleep(time.Second)
 		wg.Done()
 	}()
 
@@ -204,8 +199,8 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 	// Mock update message channel
 	wg.Add(2)
 	go func() {
-		updateChan <- newStartUpdate()
-		updateChan <- newHelloUpdate()
+		updateChan <- newStartWithoutPermissionUpdate()
+		updateChan <- newHelloWithoutPermissionUpdate()
 		updateChan <- newEndUpdate()
 		wg.Done()
 	}()
@@ -215,7 +210,7 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 			newUpdate := <-updateChan
 			dispatcher.Dispatch(&newUpdate)
 		}
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second)
 		wg.Done()
 	}()
 
