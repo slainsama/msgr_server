@@ -201,7 +201,7 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 	go func() {
 		updateChan <- newStartWithoutPermissionUpdate()
 		updateChan <- newHelloWithoutPermissionUpdate()
-		updateChan <- newEndUpdate()
+		updateChan <- newEndWithoutPermissionUpdate()
 		wg.Done()
 	}()
 
@@ -210,7 +210,7 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 			newUpdate := <-updateChan
 			dispatcher.Dispatch(&newUpdate)
 		}
-		time.Sleep(time.Second)
+		time.Sleep(time.Second * 2)
 		wg.Done()
 	}()
 

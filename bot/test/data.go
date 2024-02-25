@@ -155,3 +155,23 @@ func newEndUpdate() types.TelegramUpdate {
 	})
 	return endUpdate
 }
+
+func newEndWithoutPermissionUpdate() types.TelegramUpdate {
+	endUpdate := types.TelegramUpdate{}
+	endUpdate.Message = &types.Message{}
+	endUpdate.Message.Text = "/endUpload"
+	endUpdate.Message.Chat = &types.Chat{}
+	endUpdate.Message.Chat.ID = 123
+	endUpdate.Message.From = &types.User{}
+	endUpdate.Message.From.ID = 426
+	endUpdate.Message.Entities = append(endUpdate.Message.Entities, struct {
+		Offset int    "json:\"offset\""
+		Length int    "json:\"length\""
+		Type   string "json:\"type\""
+	}{
+		Offset: 0,
+		Length: 10,
+		Type:   "bot_command",
+	})
+	return endUpdate
+}
