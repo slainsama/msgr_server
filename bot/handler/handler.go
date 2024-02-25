@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	HandleSuccess = 0
-	HandleFailed  = -1
+	HandleFailed  = -2
+	HandleSuccess = -1
 )
 
 // HandleFunc processes update.
@@ -63,8 +63,6 @@ func NewConversationHandler(
 
 	timeout time.Duration,
 	timeoutTask HandleFunc,
-
-	keyLock *KeyLock,
 ) *Handler {
 	handler := &Handler{
 		func(u *types.TelegramUpdate) bool {
@@ -74,7 +72,6 @@ func NewConversationHandler(
 			}
 
 			pk := PersistenceKey{user.ID, chat.ID}
-			keyLock.Lock(pk)
 			state, ok := persistence.GetState(pk)
 			candidates := states[state]
 			if ok {
@@ -86,7 +83,6 @@ func NewConversationHandler(
 					return true // Release the lock in the handles
 				}
 			}
-			keyLock.Unlock(pk)
 			return false
 		},
 		[]HandleFunc{
@@ -94,20 +90,19 @@ func NewConversationHandler(
 				user, chat := u.Message.From, u.Message.Chat
 				pk := PersistenceKey{user.ID, chat.ID}
 
-				defer keyLock.Unlock(pk)
-
 				state, ok := persistence.GetState(pk)
 				candidates := states[state]
 				if ok {
 					candidates = append(candidates, cancelHandlers...)
 				}
 
+				var result int
 				for _, handler := range candidates {
 					if handler.Filter(u) {
 						for _, f := range handler.Handles {
-							result := f(u)
+							result = f(u)
 							if result == HandleFailed {
-								return HandleFailed
+								break
 							} else {
 								persistence.SetState(pk, result)
 							}
@@ -115,7 +110,7 @@ func NewConversationHandler(
 						break
 					}
 				}
-				return HandleSuccess
+				return result
 			},
 		},
 	}

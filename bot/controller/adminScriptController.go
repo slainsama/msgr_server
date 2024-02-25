@@ -36,7 +36,6 @@ func init() {
 		[]*handler.Handler{endHandler},
 		time.Minute,
 		adminAddScriptTimeoutController,
-		handler.NewKeyLock(),
 	)
 
 	botGlobals.Dispatcher.AddHandler(h)

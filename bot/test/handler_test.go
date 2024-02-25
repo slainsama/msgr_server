@@ -47,7 +47,6 @@ func TestNewConversationHandler(t *testing.T) {
 
 		time.Minute,
 		nil,
-		handler.NewKeyLock(),
 	)
 	dispatcher.AddHandler(conversationHandler)
 
@@ -71,7 +70,7 @@ func TestNewConversationHandler(t *testing.T) {
 		}
 		wg.Done()
 	}()
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 1)
 
 	wg.Wait()
 }
@@ -110,7 +109,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 			end: {
 				handler.NewCommandHandler("/endUpload", func(u *types.TelegramUpdate) int {
 					t.Log("End upload")
-					return handler.HandleSuccess
+					return handler.HandleFailed
 				}),
 			},
 		},
@@ -118,7 +117,6 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 
 		time.Minute,
 		nil,
-		handler.NewKeyLock(),
 	)
 	dispatcher.AddHandler(conversationHandler)
 
@@ -142,6 +140,7 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 		wg.Done()
 	}()
 
+	time.Sleep(time.Second)
 	wg.Wait()
 }
 
@@ -165,7 +164,8 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 		handler.StateMap{
 			start: {
 				handler.NewCommandHandler("/startUpload", func(u *types.TelegramUpdate) int {
-					t.Log("Start upload")
+					userID := u.Message.From.ID
+					t.Log(userID, " Start upload")
 					return sendHello
 				}),
 			},
@@ -173,18 +173,19 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 				handler.NewCommandHandler("/hello", func(u *types.TelegramUpdate) int {
 					userID := u.Message.From.ID
 					if role[userID] {
-						t.Log("Pass Auth")
+						t.Log(userID, " Pass Auth")
 						return end
 					} else {
-						t.Log("No permission")
+						t.Log(userID, " No permission")
 						return handler.HandleFailed
 					}
 				}),
 			},
 			end: {
 				handler.NewCommandHandler("/endUpload", func(u *types.TelegramUpdate) int {
-					t.Log("End upload")
-					return handler.HandleSuccess
+					userID := u.Message.From.ID
+					t.Log(userID, " End upload")
+					return handler.HandleFailed
 				}),
 			},
 		},
@@ -192,7 +193,6 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 
 		time.Minute,
 		nil,
-		handler.NewKeyLock(),
 	)
 	dispatcher.AddHandler(conversationHandler)
 
@@ -200,19 +200,23 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 	wg.Add(2)
 	go func() {
 		updateChan <- newStartWithoutPermissionUpdate()
+		updateChan <- newStartUpdate()
 		updateChan <- newHelloWithoutPermissionUpdate()
+		updateChan <- newHelloUpdate()
 		updateChan <- newEndWithoutPermissionUpdate()
+		updateChan <- newEndUpdate()
 		wg.Done()
 	}()
 
 	go func() {
-		for i := 0; i < 3; i++ {
+		for i := 0; i < 6; i++ {
 			newUpdate := <-updateChan
 			dispatcher.Dispatch(&newUpdate)
 		}
-		time.Sleep(time.Second * 2)
 		wg.Done()
 	}()
+
+	time.Sleep(time.Second)
 
 	wg.Wait()
 }

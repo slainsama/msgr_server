@@ -36,7 +36,7 @@ func (l *KeyLock) Unlock(key PersistenceKey) {
 	lock, ok := l.locks.Get(key)
 	if ok {
 		lock.Unlock()
-		l.locks.Remove(key)
 		mutexPool.Put(lock)
+		l.locks.Remove(key)
 	}
 }
