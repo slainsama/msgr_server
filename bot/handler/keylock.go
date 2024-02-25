@@ -2,7 +2,6 @@ package handler
 
 import (
 	"sync"
-	"sync/atomic"
 
 	"github.com/smallnest/safemap"
 )
@@ -13,53 +12,31 @@ var mutexPool = sync.Pool{
 	},
 }
 
-type LockObj struct {
-	Lock *sync.Mutex
-	Num  int64
-}
-
 type KeyLock struct {
-	locks *safemap.SafeMap[PersistenceKey, *LockObj]
+	locks *safemap.SafeMap[PersistenceKey, *sync.Mutex]
 }
 
 func NewKeyLock() *KeyLock {
 	return &KeyLock{
-		locks: safemap.New[PersistenceKey, *LockObj](),
+		locks: safemap.New[PersistenceKey, *sync.Mutex](),
 	}
-}
-
-func (l *KeyLock) getLock(key PersistenceKey) *sync.Mutex {
-	if lockObj, ok := l.locks.Get(key); ok {
-		atomic.AddInt64(&lockObj.Num, 1)
-		return lockObj.Lock
-	}
-	lock := mutexPool.Get().(*sync.Mutex)
-	l.locks.Set(key, &LockObj{
-		Lock: lock,
-	})
-	return lock
 }
 
 func (l *KeyLock) Lock(key PersistenceKey) {
-	l.getLock(key).Lock()
+	var lock *sync.Mutex
+	lock, ok := l.locks.Get(key)
+	if !ok {
+		lock = mutexPool.Get().(*sync.Mutex)
+		l.locks.Set(key, lock)
+	}
+	lock.Lock()
 }
 
 func (l *KeyLock) Unlock(key PersistenceKey) {
 	lock, ok := l.locks.Get(key)
-	if !ok {
-		return
-	}
-
-	lock.Lock.Unlock()
-	atomic.AddInt64(&lock.Num, -1)
-	if lock.Num < 0 {
-		atomic.AddInt64(&lock.Num, 1)
-	}
-	//clean
-	for pair := range l.locks.IterBuffered() {
-		if pair.Val.Num <= 0 {
-			mutexPool.Put(pair.Val.Lock)
-			l.locks.Remove(pair.Key)
-		}
+	if ok {
+		lock.Unlock()
+		l.locks.Remove(key)
+		mutexPool.Put(lock)
 	}
 }
