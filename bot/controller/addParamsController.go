@@ -16,7 +16,7 @@ func init() {
 }
 
 // addParamsController "/addParams {taskId} {arg1} {arg2}"
-func addParamsController(u *types.TelegramUpdate) {
+func addParamsController(u *types.TelegramUpdate) int {
 	userId := u.Message.Chat.ID
 
 	commands, messageArgs := botUtils.ExtractCommands(u)
@@ -31,5 +31,7 @@ func addParamsController(u *types.TelegramUpdate) {
 		}
 	} else {
 		botMethod.SendTextMessage(userId, fmt.Sprintf("no %s task", taskId))
+		return handler.HandleFailed
 	}
+	return handler.HandleSuccess
 }
