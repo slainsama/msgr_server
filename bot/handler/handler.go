@@ -2,7 +2,6 @@ package handler
 
 import (
 	"strings"
-	"time"
 
 	"github.com/slainsama/msgr_server/bot/types"
 )
@@ -60,9 +59,6 @@ func NewConversationHandler(
 	persistence ConversationPersistence,
 	states StateMap,
 	cancelHandlers []*Handler, // Handlers that will be used when exit
-
-	timeout time.Duration,
-	timeoutTask HandleFunc,
 ) *Handler {
 	handler := &Handler{
 		func(u *types.TelegramUpdate) bool {

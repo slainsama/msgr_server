@@ -20,8 +20,9 @@ func NewUpdateDispatcher() *UpdateDispatcher {
 	}
 }
 
-func (u *UpdateDispatcher) AddHandler(h *Handler) {
+func (u *UpdateDispatcher) AddHandler(h *Handler) *UpdateDispatcher {
 	u.handlers = append(u.handlers, h)
+	return u
 }
 
 func (u *UpdateDispatcher) Dispatch(tu *types.TelegramUpdate) {

@@ -44,9 +44,6 @@ func TestNewConversationHandler(t *testing.T) {
 			},
 		},
 		[]*handler.Handler{},
-
-		time.Minute,
-		nil,
 	)
 	dispatcher.AddHandler(conversationHandler)
 
@@ -114,9 +111,6 @@ func TestNewConversationHandlerWithMultiChoice(t *testing.T) {
 			},
 		},
 		[]*handler.Handler{},
-
-		time.Minute,
-		nil,
 	)
 	dispatcher.AddHandler(conversationHandler)
 
@@ -190,9 +184,6 @@ func TestNewConversationHandlerWithoutPermission(t *testing.T) {
 			},
 		},
 		[]*handler.Handler{},
-
-		time.Minute,
-		nil,
 	)
 	dispatcher.AddHandler(conversationHandler)
 

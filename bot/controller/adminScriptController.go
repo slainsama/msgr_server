@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/slainsama/msgr_server/bot/botMethod"
 	botGlobals "github.com/slainsama/msgr_server/bot/globals"
@@ -34,17 +33,9 @@ func init() {
 			end:          {endHandler},
 		},
 		[]*handler.Handler{endHandler},
-		time.Minute,
-		adminAddScriptTimeoutController,
 	)
 
 	botGlobals.Dispatcher.AddHandler(h)
-}
-
-func adminAddScriptTimeoutController(u *types.TelegramUpdate) int {
-	userID := u.Message.From.ID
-	botMethod.SendTextMessage(userID, "Timeout")
-	return handler.HandleSuccess
 }
 
 func adminScriptStartController(u *types.TelegramUpdate) int {
